@@ -11,6 +11,23 @@
 - Extracted commits: 48
 - Imported directory tree: `5e3c058f29a3bf38b5afb6f8bf461b16bbb71abf`
 
+## Earlier names retained as historical tags
+
+Backlog was previously named `feature-workflow`. Directory splitting does not
+automatically follow those renames, so their histories are retained explicitly:
+
+| Tag | Source directory / tip | Extracted tip | Commits |
+| --- | --- | --- | --- |
+| `feature-workflow-claude-import` | `.claude/skills/feature-workflow` at `51a1a62beb398eb71a75280a859703d4b5afa154` | `409adfbf0b50922c08072294b3136d17f9454457` | 1 |
+| `feature-workflow-import` | `skills/feature-workflow` at `669ce6e5ab25ec39d86aae7a1029bece42cc75ac` | `57a66e53674b02c2ec5b0c9d60c8435e60af08ad` | 7 |
+| `backlog-import-pr10` | `skills/backlog` at the source tip above | `5d2b5db5fb6b49693d0bbb9449b986d9af8a23bc` | 48 |
+
+These are historical tags, not three maintained implementations or releases.
+All three path histories are accessible with `git log --all`; the pre-rename
+segments were not rewritten into main's ancestry after bootstrap publication.
+For an older file, inspect its original path in the matching tag, for example
+`git log feature-workflow-import -- SKILL.md`.
+
 ## Method and boundaries
 
 An isolated clone of the source was checked out at the source commit. No refs,
