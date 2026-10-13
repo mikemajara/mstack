@@ -8,7 +8,7 @@ skills, references, adapters and tests below are not implemented.
 
 ## Outcome and applicability
 
-One bundle supports direct issue work or a bounded PM run through Herdr or
+One bundle supports direct issue work or a bounded orchestrator run through Herdr or
 Cursor. It advances eligible work, leaves verified PRs for review and reports
 durable outcomes. A blocked issue does not monopolize the active lane.
 
@@ -21,18 +21,19 @@ machinery is authorized by this draft.
 ## Proposed skill boundaries
 
 Four entry skills, not one skill for every phase. Names are provisional.
+Miguel chose `mstack-orchestrator` over `mstack-pm` for explicit role naming.
 
 | Skill | Trigger / input | Owns / output | Must not own |
 | --- | --- | --- | --- |
 | `mstack` | Request needing routing or stack setup | Select the relevant skill and applicable project policy; expose missing capabilities | Issue lifecycle, phase craft, scheduling or actual tool calls |
 | `backlog` | Capture, triage, research, refine, catch-up or issue-state audit | Canonical issues, product specifications, lifecycle classification and factual context | Implementation, QA execution, worker spawning, merge authority or budget policy |
-| `mstack-pm` | Explicit PM/orchestration request with scope and run limits | Select eligible work, claim/release according to policy, dispatch, reconcile and report | Research/refine/implement/verify craft, inventing readiness rules or merging without authority |
+| `mstack-orchestrator` | Explicit orchestration request with scope and run limits | Select eligible work, claim/release according to policy, dispatch, reconcile and report | Research/refine/implement/verify craft, inventing readiness rules or merging without authority |
 | `mstack-delivery` | Implement or verify a specified unit | Reviewable change or honest verification verdict with evidence | Prioritization, product decisions, invented acceptance criteria or implicit production authority |
 
 Every SKILL.md states its trigger, essential constraints and conditional
 reference routes. It does not repeat the contents of those references.
 Research/refine remain backlog modes; implement/verify remain delivery modes.
-A PM worker and an independent verifier can use different modes of the same
+An implementation worker and an independent verifier can use different modes of the same
 skill in separate sessions; skill count is not worker count.
 
 ## Proposed reference specifications
@@ -49,8 +50,8 @@ Paths below are relative to `skills/<owning-skill>/references/`.
 | `backlog/refine.md` | Shape one issue's product contract, scope, testable AC and executable checks; expose unresolved product decisions | Shaping work; references spec and lifecycle |
 | `backlog/spec.md` | Canonical issue-body product-spec fields and minimum executable check description; proportionate detail for small changes | Reading/writing a spec; no implementation sequence or authority rules |
 | `backlog/context.md` | Read-only catch-up, local-vs-shared evidence and explicit memory-to-project-guidance promotion | Context requests; no automatic triage, claim or permanent priority gates |
-| `mstack-pm/run.md` | Admission, selection, claims, worker briefs, completion handling, lane release, retries on changed signals and terminal reporting | PM mode; uses lifecycle, policy, protocol and chosen adapters |
-| `mstack-pm/outcome-protocol.md` | Structured phase/verification outcomes, registered identity, evidence bindings, cancellation, stale/replayed results and report reconciliation | Scheduled workers/adapter validation; transport and attestations, not a second lifecycle |
+| `mstack-orchestrator/run.md` | Admission, selection, claims, worker briefs, completion handling, lane release, retries on changed signals and terminal reporting | Orchestration mode; uses lifecycle, policy, protocol and chosen adapters |
+| `mstack-orchestrator/outcome-protocol.md` | Structured phase/verification outcomes, registered identity, evidence bindings, cancellation, stale/replayed results and report reconciliation | Scheduled workers/adapter validation; transport and attestations, not a second lifecycle |
 | `mstack-delivery/implement.md` | Execute locked scope, use project conventions, reproduce defects or preserve refactor baselines, self-check and prepare a linked reviewable PR | Implementation; uses spec, verification recipe and policy |
 | `mstack-delivery/verify.md` | Independent behavioral checks where policy requires them, exact AC coverage, current head/base/spec, retained evidence and honest failure classification | Verification; uses spec, policy and outcome protocol when scheduled |
 | `mstack-delivery/data-migrations.md` | Traceable migration artifacts, named generate/apply commands, target/environment identification, safe rehearsal evidence and explicit pending-operation handoff | Data/schema migration only; commands and human reservations come from project policy |
@@ -91,11 +92,11 @@ All paths in this table are under `legacy/backlog/`.
 | `references/workflow.md`, `drift.md` | `backlog/lifecycle.md`; state classification and drift reconciliation share one definition |
 | `references/research.md`, `refine.md`, `plan.md` | Backlog research/refine/spec refs, with gates referenced rather than copied |
 | `references/catch-up.md`, `long-term-memory.md` | `backlog/context.md`; keep read-only and explicit promotion modes distinct |
-| `references/pm.md` | PM run mechanics; move permission/model/WIP decisions to execution policy |
+| `references/pm.md` | Orchestrator run mechanics; move permission/model/WIP decisions to execution policy |
 | `references/herdr.md` | Herdr adapter mechanics only; move non-harness rules to their owners |
 | `references/implement.md` | Delivery implement mode; move tracker hygiene to intake/GitHub operations and authority to policy |
 | `references/qa.md`, `verification.md` | Delivery verify mode; retain risk-proportionate real-surface proof and project recipes |
-| `references/scheduled-proof.md` | Split outcome transport into PM protocol, semantic gates into lifecycle/spec/verify, permissions into policy |
+| `references/scheduled-proof.md` | Split outcome transport into orchestrator protocol, semantic gates into lifecycle/spec/verify, permissions into policy |
 | `references/github.md` | GitHub adapter and helper usage; no lifecycle or merge-authority prescriptions |
 | `references/vercel-toolbar.md` | Optional intake-source reference later; not a required fifth skill or initial rewrite target |
 | `references/spawn.md` | Retire the obsolete routing shim after its callers are checked; do not reproduce the Herdr-only restriction |
@@ -103,7 +104,7 @@ All paths in this table are under `legacy/backlog/`.
 | `references/version.json`, `README.md` | Historical metadata; a coordinated mstack version replaces it only at release |
 | `scripts/backlog-setup.mjs`, `backlog-sync.mjs` | Backlog/GitHub helpers; preserve behavior and audit callers before moving |
 | `scripts/backlog-status.mjs`, `backlog-issue-audit.mjs` | Backlog state-evidence helpers; check them against the canonical lifecycle |
-| `scripts/backlog-dedupe.mjs`, `backlog-refinement-candidates.mjs` | Intake/readiness helpers; selection policy remains with PM |
+| `scripts/backlog-dedupe.mjs`, `backlog-refinement-candidates.mjs` | Intake/readiness helpers; selection policy remains with the orchestrator |
 | `scripts/catch-up-gather.mjs`, `backlog-lib.mjs` | Context gatherer and shared GitHub helper implementation; no new framework |
 | `assets/agent-hint.md`, `inbox.md`, `memory.md` | Backlog setup templates; hints reference workflows rather than embedding them |
 

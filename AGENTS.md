@@ -5,7 +5,7 @@ a draft for alignment, not permission to implement its proposed contents.
 
 Keep `legacy/backlog/` unchanged during architecture review. Its SKILL.md and
 references are historical input, not operating instructions for this repo.
-Do not install skills, run a PM, alter timers, merge existing PRs, remove the
+Do not install skills, run an orchestrator, alter timers, merge existing PRs, remove the
 original backlog, or change deployment configuration as part of bootstrap.
 
 Keep lifecycle validity separate from execution authority and harness tools.

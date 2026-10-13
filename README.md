@@ -4,7 +4,7 @@ A proposed harness-neutral delivery stack for small software projects.
 
 **Architecture review only. Not an installable mstack release.** The first
 milestone is agreement on responsibilities and references, not writing all
-the skills or activating an autonomous PM.
+the skills or activating an autonomous orchestrator.
 
 Review [the structure and item specifications](docs/STRUCTURE.md). This is
 the only design document to review now; proposed paths are not implemented.
