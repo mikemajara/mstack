@@ -2,8 +2,10 @@
 
 Read `README.md`, `MEMORY.md` and `docs/STRUCTURE.md` before making changes.
 When resuming, read `docs/HANDOFF.md` for the session handoff. The agreed
-skill roots are `workflow/`, `orchestrator/` and `tracker/`. Detailed contents
-remain to be drafted; planning files do not authorize installation/activation.
+skill roots are `skills/workflow/`, `skills/orchestrator/` and `skills/tracker/`. Draft skill files
+exist; incomplete contracts are marked in place. Edit behavior in the owning
+skill rather than duplicating it in planning docs. Drafting does not authorize
+installation or activation.
 
 Keep material new decisions, facts, open questions and gotchas in `MEMORY.md`
 when they are not already in lasting project guidance. Distinguish confirmed

@@ -2,15 +2,18 @@
 
 A proposed harness-neutral delivery stack for small software projects.
 
-**Planning and handoff only. Not an installable mstack release.** The agreed
-skill roots are `workflow/`, `orchestrator/` and `tracker/`. Their instructions
-and phase contracts have not been authored yet.
+**Draft skills, not a release ready for installation.** Develop the stack in
+its three skill roots:
 
-Start with the [session handoff](docs/HANDOFF.md), then the
-[structure and item specifications](docs/STRUCTURE.md).
-[MEMORY.md](MEMORY.md) keeps relevant knowledge not already in `AGENTS.md`;
-project memory will be a default workflow capability. These are authoring and
-continuity documents, not installed skill instructions.
+- [workflow](skills/workflow/SKILL.md): phase contracts, verification and default memory.
+- [orchestrator](skills/orchestrator/SKILL.md): execution and permissions; optional Herdr integration.
+- [tracker](skills/tracker/SKILL.md): specifications, workflow facts and evidence; optional GitHub integration.
+
+Start with the [workflow flowchart](skills/workflow/references/lifecycle.md) and
+[research gate](skills/workflow/references/phase/research.md). Incomplete contracts are marked
+in place. [Structure](docs/STRUCTURE.md) maps file ownership;
+[handoff](docs/HANDOFF.md) records the current review point.
+[MEMORY.md](MEMORY.md) retains project knowledge not already in `AGENTS.md`.
 
 `legacy/backlog/` is an unchanged historical snapshot of the backlog skill
 through skills PR #10. It preserves the source material, including known
