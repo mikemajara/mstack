@@ -7,10 +7,10 @@ the next development decision.
 
 ## Current review — 2026-10-17
 
-- The user is reviewing [workflow phase references](skills/workflow/references/phase/).
+- The user is reviewing [workflow phase references](skills/workflow/references/phases/).
   Continue with the requested reference or boundary; there is no requirement to
   complete every scaffold in one pass.
-- [Research](skills/workflow/references/phase/research.md) now explicitly includes
+- [Research](skills/workflow/references/phases/research.md) now explicitly includes
   feasibility questions and possible changes. Its two required gate questions
   still have draft wording. Later phase contracts and integration procedures
   remain incomplete.

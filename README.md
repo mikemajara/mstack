@@ -13,7 +13,7 @@ instructions. [STRUCTURE.md](docs/STRUCTURE.md) maps ownership and files;
 [MEMORY.md](MEMORY.md) holds the current review context and open questions.
 
 Start reviewing the workflow with its [lifecycle](skills/workflow/references/lifecycle.md)
-and [phase references](skills/workflow/references/phase/). Incomplete contracts
+and [phase references](skills/workflow/references/phases/). Incomplete contracts
 are marked in place. These drafts are not a release ready for installation.
 
 `legacy/backlog/` is frozen historical source material from

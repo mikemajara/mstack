@@ -33,8 +33,8 @@ skills/
     SKILL.md
     references/
       attributes.json     # Work-item type, priority, phase and status vocabulary
-      lifecycle.md        # Flowchart, entry points, gate model, blocked/resume
-      phase/
+      lifecycle.md        # Flow across phases: entry, gates, blocked, header fields
+      phases/             # One contract per phase
         research.md       # Facts and handoff to refinement
         refinement.md     # Scope, acceptance criteria and verification brief
         implementation.md # Reviewable change and self-check handoff

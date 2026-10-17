@@ -15,8 +15,9 @@ Main source of truth for the project is the 1. the codebase and 2. `AGENTS.md`. 
 
 Material decisions, facts, questions and gotchas as they arise are captured in [memory](references/memory.md).
 
-Read [lifecycle](references/lifecycle.md) to establish the current phase and valid
-destinations. Use [work-item attributes](references/attributes.json) for
+Read [lifecycle](references/lifecycle.md), the flow across phases, to establish the current
+phase, the phase-file header fields, and valid destinations. Each phase contract is a
+file under [phases](references/phases/). Use [work-item attributes](references/attributes.json) for
 [type][attribute:type], [priority][attribute:priority], [phase][attribute:phase] and
 [status][attribute:status] definitions. `label` names an attribute or value; `children`
 lists its values. Concrete tracker mappings belong to tracker. Attribute values do not
@@ -29,12 +30,12 @@ Read the reference for the phase being performed:
 
 | Phase or concern | Reference |
 | --- | --- |
-| [Research][phase:research] — Establish facts | [Contract](references/phase/research.md) |
-| [Refinement][phase:refinement] — Specify scope and acceptance criteria | [Contract](references/phase/refinement.md) |
-| [Implementation][phase:implementation] — Produce a change ready for [QA][phase:qa] | [Contract](references/phase/implementation.md) |
-| [QA][phase:qa] — Judge the specified behavior | [Contract](references/phase/qa.md) |
-| [Integration][phase:integration] — Validate [integration][phase:integration] | [Contract](references/phase/integration.md) |
-| [Deployment][phase:deployment] — Establish [deployment][phase:deployment] facts | [Contract](references/phase/deployment.md) |
+| [Research][phase:research] — Establish facts | [Contract](references/phases/research.md) |
+| [Refinement][phase:refinement] — Specify scope and acceptance criteria | [Contract](references/phases/refinement.md) |
+| [Implementation][phase:implementation] — Produce a change ready for [QA][phase:qa] | [Contract](references/phases/implementation.md) |
+| [QA][phase:qa] — Judge the specified behavior | [Contract](references/phases/qa.md) |
+| [Integration][phase:integration] — Validate [integration][phase:integration] | [Contract](references/phases/integration.md) |
+| [Deployment][phase:deployment] — Establish [deployment][phase:deployment] facts | [Contract](references/phases/deployment.md) |
 | Define scenarios or judge evidence | [Verification](references/verification.md) |
 
 [Implementation][phase:implementation] complete means ready for [QA][phase:qa].

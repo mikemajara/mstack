@@ -1,5 +1,7 @@
 # Lifecycle
 
+This file is the flow across phases: where work can enter, how gates and blocked work behave, and what the phase-file header fields mean. Each phase contract is a file in [phases](phases/).
+
 Draft: detailed phase contracts are incomplete. An unspecified gate is not a pass.
 
 [Research][phase:research] is the earliest phase, not a mandatory entry point. Work can
@@ -29,6 +31,17 @@ flowchart TD
 Arrows summarize gates; read the destination phase contract before advancing. Detailed
 [integration][phase:integration] and [deployment][phase:deployment] routes remain
 unspecified.
+
+## Phase file header
+
+Each phase contract starts with a header. The header names the allowed destinations. The phase body states when each destination applies. One value and a list are the same kind of fact: the phases that are allowed. A list means the story moves to one of the listed phases, chosen by the condition in the body. A missing field means that destination is not part of the contract.
+
+| Field | Meaning |
+| --- | --- |
+| `entry` | Whether a story may start in this phase. |
+| `output` | The artifact this phase must leave behind. |
+| `forward` | The phase a passing exit moves to. |
+| `returns` | The phases a gap may send the work back to. |
 
 ## Gate contract
 
