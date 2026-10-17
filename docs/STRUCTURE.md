@@ -3,6 +3,22 @@
 Exactly three skills. Draft files exist; incomplete contracts are marked in
 place. Maintain behavior in the owning skill and use this document as a map.
 
+## Repository files
+
+| File or directory | Purpose |
+| --- | --- |
+| `AGENTS.md` | Instructions for developing mstack itself |
+| `README.md` | Project entry point and source pointer |
+| `MEMORY.md` | Current review context and unresolved design questions |
+| `docs/STRUCTURE.md` | File and responsibility map |
+| `skills/` | Draft product instructions and references |
+| `legacy/backlog/` | Frozen historical input for comparison |
+
+Repository guidance and continuity are separate from the product's workflow and
+memory contracts. See [AGENTS.md](../AGENTS.md) for the authoring rules.
+
+## Skill ownership
+
 | Skill | Owns | Must not own |
 | --- | --- | --- |
 | [workflow](../skills/workflow/SKILL.md) | Phase contracts, readiness and verification criteria, valid transitions, work shaping and default project memory | Runtime tools, execution authority or tracker mappings |
@@ -19,7 +35,7 @@ skills/
       attributes.json     # Work-item type, priority, phase and status vocabulary
       lifecycle.md        # Flowchart, entry points, gate model, blocked/resume
       phase/
-        research.md       # Facts and handoff to refinement; current review focus
+        research.md       # Facts and handoff to refinement
         refinement.md     # Scope, acceptance criteria and verification brief
         implementation.md # Reviewable change and self-check handoff
         qa.md             # Behavioral judgment and rework
@@ -37,8 +53,8 @@ skills/
       github.md           # Work-record integration placeholder
 ```
 
-Phase references are not additional skills. Cross-cutting data-migration
-requirements remain a later drafting topic; there is no additional skill root.
+Phase references are not additional skills. The memory reference defines
+target-project behavior; root `MEMORY.md` records development of mstack itself.
 
 ## Optional integrations
 
@@ -53,10 +69,5 @@ operations and constraints. Runtime/project policy determines execution and
 decision authority; workflow supplies validation standards for every actor.
 Installation/fallback behavior and installed cross-skill resolution are pending.
 
-## Authoring boundaries
-
-Keep design discussion and migration context in [HANDOFF.md](HANDOFF.md) and
-[MEMORY.md](../MEMORY.md), rather than distributing them in skill instructions.
-Read [AGENTS.md](../AGENTS.md) for repository constraints.
-[PROVENANCE.md](PROVENANCE.md) records the unchanged archive and import history.
-No skills have been installed or automation activated by this authoring work.
+Current review context and unresolved design questions live in
+[MEMORY.md](../MEMORY.md).
