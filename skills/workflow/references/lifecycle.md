@@ -1,0 +1,68 @@
+# Lifecycle
+
+Draft: detailed phase contracts are incomplete. An unspecified gate is not a pass.
+
+[Research][phase:research] is the earliest phase, not a mandatory entry point. Work can
+enter [research][phase:research], [refinement][phase:refinement] or
+[implementation][phase:implementation] when the destination's prerequisites are
+satisfied. Existing artifacts can satisfy prerequisites; entering later does not waive
+them. There is no intake phase.
+
+```mermaid
+flowchart TD
+    Request[Work request] --> Entry{Which entry prerequisites are met?}
+    Entry --> Research[Research]
+    Entry --> Refine[Refinement]
+    Entry --> Implement[Implementation]
+    Research -->|Research exit / refinement entry gate passes| Refine
+    Refine -->|Specification and verification brief ready| Implement
+    Refine -->|Missing facts prevent specification| Research
+    Implement -->|Reviewable change and self-check evidence ready| QA[QA]
+    Implement -->|Specification hole| Refine
+    QA -->|Code defect| Implement
+    QA -->|Specification hole| Refine
+    QA -->|Required evidence passes for identified versions| Integration[Integration]
+    Integration -->|Integration validated| Integrated[Integration complete]
+    Integrated -.-> Deployment[Deployment is a separate fact]
+```
+
+Arrows summarize gates; read the destination phase contract before advancing. Detailed
+[integration][phase:integration] and [deployment][phase:deployment] routes remain
+unspecified.
+
+## Gate contract
+
+Each phase specifies entry prerequisites, required outputs, exit validation and
+valid destinations. A transition must satisfy both the source's exit requirements
+and destination's entry requirements; reference shared requirements rather than
+defining competing versions.
+
+Required gate questions need supported answers meeting their pass conditions.
+Unknown is not a pass. An applicability exception must be explicitly allowed by
+the contract and explained.
+
+Investigation prompts guide discovery. Answering every prompt is not required
+for advancement. Material findings may reveal an unmet requirement.
+
+## Missing inputs, blocked work and resume
+
+```mermaid
+flowchart TD
+    Gate{Required gate satisfied?} -->|Yes| Advance[Advance to destination phase]
+    Gate -->|No| Obtain{Can missing input be obtained now?}
+    Obtain -->|Yes| Work[Continue work in current phase]
+    Work --> Gate
+    Obtain -->|No| Blocked[Blocked: record missing input and resume condition]
+    Blocked -->|Resume condition met| Work
+```
+
+If required input or evidence is obtainable, continue work in the current phase. If it
+requires unavailable input, access or an external decision, mark the current phase
+[blocked][status:blocked]. Record the missing prerequisite and observable resume
+condition. Blocking is a hold on a phase. Resume by rechecking entry prerequisites and
+the relevance of existing outputs. Never manufacture an answer to pass a gate.
+
+An unanswered guidance prompt alone does not block advancement. Missing required
+verification evidence blocks a pass. Established code defects return to
+[implementation][phase:implementation]; specification holes return to
+[refinement][phase:refinement].
