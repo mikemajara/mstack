@@ -48,7 +48,11 @@ skills/
   tracker/
     SKILL.md
     references/
-      github.md           # Work-record integration placeholder
+      github.md           # Issues/PR operations, mappings and merge confirmation
+      github-labels.json  # GitHub label names and display metadata
+    scripts/
+      github/
+        setup-labels.mjs  # Check, preview or apply the GitHub label mapping
 ```
 
 Phase references are not additional skills. The memory reference defines
@@ -65,7 +69,8 @@ The owning skill defines the general integration contract and handles
 availability/failure policy. Concrete references describe that system's actual
 operations and constraints. Runtime/project policy determines execution and
 decision authority; workflow supplies validation standards for every actor.
-Installation/fallback behavior and installed cross-skill resolution are pending.
+Tracker defines missing-access and partial-operation handling; installed
+cross-skill resolution and orchestrator integration availability remain pending.
 
 Current review context and unresolved design questions live in
 [MEMORY.md](../MEMORY.md).
