@@ -7,6 +7,18 @@ developed as three draft skills:
 - [mstack-orchestrator](skills/mstack-orchestrator/SKILL.md) coordinates stories through those phases.
 - [mstack-tracker](skills/mstack-tracker/SKILL.md) performs record operations, with filesystem and GitHub integrations.
 
+The three skills share one mStack version, recorded in each skill's frontmatter.
+Each skill has a `CHANGELOG.md` with stack-wide release changes and their impact
+on that skill.
+
+A release contains all three skill directories under `skills/` at the same
+version. Install them as siblings under one skills root, preserving their names
+and relative paths. Workflow rules can be used on their own; operations that
+depend on tracker or orchestrator contracts require those sibling skills. If a
+required sibling reference is missing, stop the dependent operation and report
+the incomplete installation instead of searching for or substituting another
+version.
+
 These skills guide behavior; access is controlled by the environment the actor
 runs in. Workflow can guide an actor directly without the other skills. Tracker
 and orchestrator follow workflow; orchestrator uses tracker for record
@@ -35,9 +47,9 @@ instructions. [STRUCTURE.md](docs/STRUCTURE.md) maps ownership and files;
 
 Start reviewing the workflow with its [lifecycle](skills/mstack-workflow/references/lifecycle.md)
 and [phase references](skills/mstack-workflow/references/phases/). Incomplete contracts
-are marked in place. The target first release is `0.0.1`. Gate review,
-packaging checks and a supervised story walkthrough remain before release;
-these drafts are not ready for installation.
+are marked in place. The shared starting version is `0.1.0`. Review of
+remaining contract gaps, packaging checks and a supervised story walkthrough
+remain before release; these drafts are not ready for installation.
 
 `legacy/backlog/` is frozen historical source material from
 [mikemajara/skills](https://github.com/mikemajara/skills/tree/2ba433139fc2e102ad2f231de2c2d79f6ea12a06/skills/backlog),

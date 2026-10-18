@@ -34,7 +34,8 @@ memory contracts. See [AGENTS.md](../AGENTS.md) for the authoring rules.
 ```text
 skills/
   mstack-workflow/
-    SKILL.md
+    SKILL.md             # Shared mStack version in frontmatter
+    CHANGELOG.md         # Stack-wide release changes and workflow impact
     references/
       attributes.json     # Work-item type, priority, phase and status vocabulary
       lifecycle.md        # Flow across phases: entry, gates, blocked, header fields
@@ -46,7 +47,8 @@ skills/
       verification.md     # Shared evidence, tested commits and invalidation
       memory.md           # Default read/capture and deliberate promotion
   mstack-orchestrator/
-    SKILL.md
+    SKILL.md             # Shared mStack version in frontmatter
+    CHANGELOG.md         # Stack-wide release changes and orchestrator impact
     references/
       configuration.md    # .mstack/config.json, execution settings and tracker selector
       herdr.md            # Herdr operation mapping and capability limitations
@@ -54,7 +56,8 @@ skills/
       cursor-subagents.md # Native Cursor session delegation
       cmux.md             # macOS/TUI command mappings and capability limitations
   mstack-tracker/
-    SKILL.md
+    SKILL.md             # Shared mStack version in frontmatter
+    CHANGELOG.md         # Stack-wide release changes and tracker impact
     references/
       filesystem.md       # Default local issues, format, identity and operations
       github.md           # Issues/PR operations, mappings and merge confirmation
@@ -84,8 +87,9 @@ availability/failure policy. Concrete references describe that system's actual
 operations and constraints. The current request and project instructions define
 role scope; workflow supplies validation standards for every actor.
 Tracker defines missing-access and partial-operation handling; orchestrator
-defines capability checks and execution controls. Installed cross-skill
-resolution and complete runtime/harness mappings remain pending.
+defines capability checks and execution controls. The shared release and
+installed sibling layout are defined in `AGENTS.md` and `README.md`; actual
+packaging validation and complete runtime/harness mappings remain pending.
 
 Current review context and unresolved design questions live in
 [MEMORY.md](../MEMORY.md).

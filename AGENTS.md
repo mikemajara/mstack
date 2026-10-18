@@ -35,6 +35,31 @@ and preserve required outputs. Check return paths separately; direct entry
 may have different prerequisites from a handoff. Keep overlapping entry and
 exit requirements consistent so each phase reference stands alone.
 
+## Versioning and release notes
+
+Release mStack as one versioned set. The `version` field in each of the three
+skill frontmatters must match; the starting version is `0.1.0`. Apply one
+version bump to all three skills for every release, including skills whose
+behavior does not change.
+
+The release set contains all three skill directories under `skills/`.
+Preserve their names and sibling layout in any distribution or installation so
+relative cross-skill references resolve to the same version. Do not publish
+independently versioned skill artifacts.
+
+Use these project bump rules: patch for corrections or clarifications with no
+intended behavior change; minor for compatible additions; major for changes
+that require existing users or agents to adapt. Record the reason for the bump
+in the release entries.
+
+Each skill has its own `CHANGELOG.md`. For every release, add an entry to all
+three, including an explicit no-change entry when that skill's behavior is
+unchanged. Every entry must summarize changes across all three skills and state
+how each affects the skill whose changelog it appears in, including whether
+that skill must adapt. State explicitly when no adaptation is needed; readers
+must not infer compatibility from an omitted change. Keep the three entries at
+the same version and consistent about cross-skill effects.
+
 Distributed skill content should guide its eventual user. Keep authoring
 discussion, review progress and open design questions in `MEMORY.md`, rather
 than in the skill instructions or concrete integration references. Mark draft
