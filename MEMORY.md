@@ -12,8 +12,7 @@ the next development decision.
   complete every scaffold in one pass.
 - [Research](skills/workflow/references/phases/research.md) now explicitly includes
   feasibility questions and possible changes. Its two required gate questions
-  still have draft wording. Later phase contracts and integration procedures
-  remain incomplete.
+  still have draft wording. Later phase contracts remain incomplete.
 - Attribute definitions live in [attributes.json](skills/workflow/references/attributes.json).
   The short semantic-reference convention is maintained in
   [workflow definitions](skills/workflow/SKILL.md#definitions).
@@ -22,8 +21,6 @@ the next development decision.
 
 - Exact phase gate questions and pass conditions, starting with research and
   refinement.
-- Integration rework routes and whether deployment is applicable to a given
-  work item.
 - Detailed evidence format and rules for revalidating changed versions.
 - Missing-integration handling and cross-skill reference resolution after
   installation.

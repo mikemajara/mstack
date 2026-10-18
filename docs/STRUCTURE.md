@@ -37,10 +37,8 @@ skills/
       phases/             # One contract per phase
         research.md       # Facts and handoff to refinement
         refinement.md     # Scope, acceptance criteria and verification brief
-        implementation.md # Reviewable change and self-check handoff
+        implementation.md # Specified features implemented in code
         qa.md             # Behavioral judgment and rework
-        integration.md    # Integration proof; incomplete contract
-        deployment.md     # Separate deployment fact; phase applicability unresolved
       verification.md     # Shared evidence and version traceability
       memory.md           # Default read/capture and deliberate promotion
   orchestrator/

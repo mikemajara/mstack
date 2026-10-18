@@ -19,18 +19,13 @@ flowchart TD
     Research -->|Research exit / refinement entry gate passes| Refine
     Refine -->|Specification and verification brief ready| Implement
     Refine -->|Missing facts prevent specification| Research
-    Implement -->|Reviewable change and self-check evidence ready| QA[QA]
+    Implement -->|Specified features are implemented in the code| QA[QA]
     Implement -->|Specification hole| Refine
     QA -->|Code defect| Implement
     QA -->|Specification hole| Refine
-    QA -->|Required evidence passes for identified versions| Integration[Integration]
-    Integration -->|Integration validated| Integrated[Integration complete]
-    Integrated -.-> Deployment[Deployment is a separate fact]
 ```
 
-Arrows summarize gates; read the destination phase contract before advancing. Detailed
-[integration][phase:integration] and [deployment][phase:deployment] routes remain
-unspecified.
+Arrows summarize gates; read the destination phase contract before advancing.
 
 ## Phase file header
 

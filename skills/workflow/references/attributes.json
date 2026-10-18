@@ -49,19 +49,11 @@
       },
       {
         "label": "implementation",
-        "description": "Produce a reviewable change and self-check evidence for QA."
+        "description": "Implement the features the specification describes."
       },
       {
         "label": "qa",
         "description": "Judge the change against the specification using evidence for identified versions."
-      },
-      {
-        "label": "integration",
-        "description": "Validate the change in its integration destination."
-      },
-      {
-        "label": "deployment",
-        "description": "Establish deployment as a separate fact from QA and integration."
       }
     ]
   },

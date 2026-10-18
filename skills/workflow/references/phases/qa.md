@@ -1,35 +1,25 @@
 ---
 entry: false
 output: verdict
-forward: integration
 returns: [implementation, refinement]
 ---
 
 # QA
 
-Draft: detailed gate questions and procedure are not specified.
-
 ## Entry prerequisites
 
-A reviewable change satisfying [implementation][phase:implementation] [exit
-requirements](implementation.md#exit-validation), an identified specification and
-executable verification scenarios.
+Stories in [QA][phase:qa] have code within the specified scope that implements the features the specification describes, and executable verification scenarios for the acceptance criteria.
 
 ## Required outputs
 
-A verdict connecting every acceptance criterion to scenario results and retained
-evidence, identifying tested change/specification versions. Follow
-[verification](../verification.md).
+Stories in [QA][phase:qa] contain a verdict that connects every acceptance criterion to scenario results and retained evidence, and that identifies the tested change version and the specification version.
 
 ## Exit validation
 
-Required criteria and scenarios must pass with sufficient, current evidence.
-Missing required evidence blocks a pass. Detailed verdict format and validation
-questions remain unspecified.
+| Required question | Pass condition |
+| --- | --- |
+| Do the required scenarios pass for the identified versions? | Stories in [QA][phase:qa] connect every acceptance criterion to scenario results and retained evidence, and identify the tested change version and the specification version. The required scenarios pass on that evidence. Missing required evidence means this condition is false. |
 
 ## Valid destinations
 
-[Integration][phase:integration] after a validated pass and its entry prerequisites.
-[Implementation][phase:implementation] for code defects; [refinement][phase:refinement]
-for specification holes. Otherwise continue [QA][phase:qa] or hold it
-[blocked][status:blocked] under [lifecycle](../lifecycle.md).
+Stories in [QA][phase:qa] are done with that phase when the pass condition is true. They return to [implementation][phase:implementation] for a code defect. They return to [refinement][phase:refinement] for a specification hole. Otherwise they continue in [QA][phase:qa] or are held [blocked][status:blocked] under [lifecycle](../lifecycle.md).

@@ -2,35 +2,31 @@
 entry: true
 output: specification
 forward: implementation
-returns: research
+returns: research,implementation
 ---
 
 # Refinement
 
-Draft: detailed gate questions and procedure are not specified.
-
 ## Entry prerequisites
 
-The [research][phase:research] [exit gate](research.md#exit-validation) is satisfied by
-existing evidence or completed [research][phase:research].
+Stories in [refinement][phase:refinement] request a change in the project that is to be specified.
 
 ## Required outputs
 
-A work specification containing goal, in/out scope, testable acceptance criteria
-and verification scenarios with prerequisites and expected observable results.
-It must support judgment without the original conversation. Bring recommendations
-to whoever handles the decision; identify unresolved choices explicitly.
+Stories in [refinement][phase:refinement] contain a specification with the goal, what is in scope, what is out
+of scope, testable acceptance criteria, and verification scenarios.
 
 ## Exit validation
 
-Before [implementation][phase:implementation], scope and product decisions needed to
-implement and judge the result must be resolved. Required criteria and scenarios must
-meet the [verification contract](../verification.md). Detailed validation questions
-remain unspecified.
+| Required question | Pass condition |
+| --- | --- |
+| What change is being specified? | Stories in [refinement][phase:refinement] state the goal, what is in scope, and what is out of scope, with testable acceptance criteria. The specification can be judged without the original conversation. |
+| Can the result be implemented and judged from these stories? | Stories in [refinement][phase:refinement] resolve the scope and product decisions needed to implement and judge the result. Each acceptance criterion has a verification scenario with prerequisites and an expected observable result. Choices that do not block implementation are identified. |
 
 ## Valid destinations
 
-[Implementation][phase:implementation] when its entry prerequisites are met.
-[Research][phase:research] when missing facts prevent specification. Otherwise continue
-[refinement][phase:refinement] or hold it [blocked][status:blocked] under
-[lifecycle](../lifecycle.md).
+Stories in [refinement][phase:refinement] leave that phase when both pass conditions are true. The
+next phase is [implementation][phase:implementation]. They return to
+[research][phase:research] when a missing fact prevents the specification. Otherwise
+they continue in [refinement][phase:refinement] or are held [blocked][status:blocked]
+under [lifecycle](../lifecycle.md).

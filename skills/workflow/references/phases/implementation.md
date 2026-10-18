@@ -7,27 +7,21 @@ returns: refinement
 
 # Implementation
 
-Draft: detailed gate questions and procedure are not specified.
-
 ## Entry prerequisites
 
-A specification meeting the [refinement][phase:refinement] [exit
-requirements](refinement.md#exit-validation): clear goal/scope, testable acceptance
-criteria and verification scenarios.
+Stories in [implementation][phase:implementation] state the goal, what is in scope, what is out of scope, and testable acceptance criteria. Each acceptance criterion has a verification scenario with prerequisites and an expected observable result. The specification must be assesable without the original context.
 
 ## Required outputs
 
-A reviewable change within the specified scope and retained self-check evidence
-identifying the change and specification versions.
+Stories in [implementation][phase:implementation] contain the code for the features the specification describes, and that code stays within the specified scope.
 
 ## Exit validation
 
-[Implementation][phase:implementation] complete means ready for [QA][phase:qa]. An
-existing change alone does not establish readiness. Detailed required self-checks and
-gate questions remain unspecified.
+| Required question | Pass condition |
+| --- | --- |
+| Does the change stay within the specified scope? | Stories in [implementation][phase:implementation] change only what the specification covers. |
+| Are all the specified features implemented? | Stories in [implementation][phase:implementation] implement every feature the specification describes. The change is that code or configuration |
 
 ## Valid destinations
 
-[QA][phase:qa] when ready for judgment. [Refinement][phase:refinement] for specification
-holes. Otherwise continue [implementation][phase:implementation] or hold it
-[blocked][status:blocked] under [lifecycle](../lifecycle.md).
+Stories in [implementation][phase:implementation] leave that phase when both pass conditions are true. The next phase is [QA][phase:qa]. They return to [refinement][phase:refinement] when the specification does not cover the entry prerequisits. Otherwise they continue in [implementation][phase:implementation] or are held [blocked][status:blocked] under [lifecycle](../lifecycle.md).

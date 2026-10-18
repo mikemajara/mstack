@@ -8,10 +8,9 @@ Not specified.
 
 ## Workflow mappings
 
-Issue closure follows validated [QA][phase:qa] completion and
-[integration][phase:integration] completion. [Implementation][phase:implementation]
-completion alone does not justify closure. Field, label and relationship mappings are
-not specified.
+Issue closure follows validated [QA][phase:qa] completion.
+[Implementation][phase:implementation] completion alone does not justify closure.
+Field, label and relationship mappings are not specified.
 
 ## Evidence and version identity
 
