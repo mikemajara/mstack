@@ -10,6 +10,11 @@ An execution record adds observed results, retained evidence and the tested
 change/specification versions. Identify the tested build or instance when it
 affects the result. Retain evidence after cleanup.
 
+Record QA execution results, evidence links and the verdict on the PR as defined
+by [QA](phases/qa.md). Link them to the story's acceptance criteria and
+verification scenarios, and identify the tested commit. The story links to the
+verdict without duplicating the report.
+
 ## Judgment
 
 Evidence must demonstrate the required behavior. A successful command or a completion

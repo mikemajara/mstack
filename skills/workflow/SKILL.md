@@ -38,8 +38,10 @@ Read the reference for the phase being performed:
 | Define scenarios or judge evidence | [Verification](references/verification.md) |
 
 [Implementation][phase:implementation] complete means ready for [QA][phase:qa].
-[QA][phase:qa] complete is a separate fact. Required evidence establishes
-completion; a tracker field alone does not.
+[QA][phase:qa] passing requires evidence recorded on the PR. After QA passes,
+merge the PR, then close the story under
+[story completion](references/lifecycle.md#story-completion). A tracker field
+alone does not establish completion.
 
 ## Definitions
 

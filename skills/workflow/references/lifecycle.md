@@ -19,13 +19,28 @@ flowchart TD
     Research -->|Research exit / refinement entry gate passes| Refine
     Refine -->|Specification and verification brief ready| Implement
     Refine -->|Missing facts prevent specification| Research
-    Implement -->|Specified features are implemented in the code| QA[QA]
+    Implement -->|Specified features are implemented in a reviewable PR| QA[QA]
     Implement -->|Specification hole| Refine
     QA -->|Code defect| Implement
     QA -->|Specification hole| Refine
+    QA -->|QA passes and the PR is merged| Closed[Story closed]
 ```
 
 Arrows summarize gates; read the destination phase contract before advancing.
+
+## Story completion
+
+After [QA][phase:qa] passes for the current change and specification versions,
+merge the PR. Close the story only after confirming that the validated change
+has been merged. A passing verdict alone does not close the story, and merging
+without passing QA does not satisfy completion.
+
+Until merge is confirmed, the story remains in [QA][phase:qa]. Apply the missing
+input and blocked-work rules below when the merge cannot proceed. Execution
+authority follows orchestrator and project policy.
+
+A story is a work item independent of the system that stores it. Tracker owns
+the concrete mapping of story closure and links between the story and PR.
 
 ## Phase file header
 

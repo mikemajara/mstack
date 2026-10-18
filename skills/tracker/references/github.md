@@ -8,8 +8,13 @@ Not specified.
 
 ## Workflow mappings
 
-Issue closure follows validated [QA][phase:qa] completion.
-[Implementation][phase:implementation] completion alone does not justify closure.
+When a story is stored as a GitHub issue, close that issue only after QA has
+passed and the PR has been merged, following workflow's
+[story completion](../../workflow/references/lifecycle.md#story-completion).
+Link the issue and PR in both directions, and link the issue to the QA verdict
+on the PR. A PR may also link to a story stored in another tracker; that
+tracker records story closure under the same workflow rule.
+
 Field, label and relationship mappings are not specified.
 
 ## Evidence and version identity
