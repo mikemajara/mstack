@@ -18,6 +18,41 @@ PR. Record story closure only after workflow's
 [story completion](../workflow/references/lifecycle.md#story-completion)
 requirements are satisfied.
 
+## Issue tracker selection
+
+> **Use filesystem issues only when no issue tracker is selected. A configured
+> tracker being unavailable does not activate this fallback.**
+
+Resolve explicit current-request instructions over `tracker.issues` in the
+project's `.mstack/config.json`. Supported selections are `github` and
+`filesystem`. If neither source selects an issue tracker, default to
+`filesystem`, storing issues under `.mstack/issues/`. An absent configuration
+file, absent `tracker` object or omitted `issues` key needs no setup to select
+this default. Malformed configuration, an invalid selector (including `null`
+or an empty string), or an unknown integration needs correction rather than
+fallback. Naming another system in a request requires its operation mapping;
+report a missing mapping instead of substituting local storage.
+
+For example, an existing configuration can select GitHub Issues with:
+
+```json
+{
+  "tracker": { "issues": "github" }
+}
+```
+
+The explicit `filesystem` value selects the same integration as the default.
+These are configuration semantics, not an executable loader. See the shared
+[configuration reference](../orchestrator/references/configuration.md).
+
+A GitHub remote or available `gh` does not select GitHub Issues. PR hosting is
+selected independently through project settings or the current request; the
+issue selector does not select or disable it. Retain each existing story's
+system of record. Changing the selection governs new stories, not migration
+of existing ones; moving records requires an explicit migration decision.
+Local issue files are canonical records, not an offline cache or a second
+editable copy of hosted issues.
+
 ## Integration contract
 
 Select integrations from project configuration or the current request. Story
@@ -60,6 +95,7 @@ current remote state. Do not silently switch the story's system of record.
 
 | System | Capabilities | Reference |
 | --- | --- | --- |
+| Filesystem | Default issue storage when no issue tracker is selected; no PR hosting | [Filesystem](references/filesystem.md) |
 | GitHub | Stories in Issues; PRs, QA records and merge confirmation, independently of story storage | [GitHub](references/github.md) |
 
 Integration helpers ship under `scripts/<integration>/` within this skill.

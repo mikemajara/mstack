@@ -3,7 +3,9 @@
 Use for stories stored in GitHub Issues, for PRs hosted on GitHub, or both.
 Follow the parent [tracker contract](../SKILL.md). A story stored elsewhere
 keeps its identity and specification in that system; use this integration only
-for its GitHub records and link back to the story's full URL.
+for its GitHub records and link back to the story's full URL. For
+[filesystem stories](filesystem.md#relationships-versions-and-completion), use
+an accessible repository file URL and retain the project-qualified issue path.
 
 Workflow owns phase prerequisites, required content, validation and completion.
 This reference maps those records and operations to GitHub. Read the linked
@@ -158,7 +160,9 @@ and `updatedAt` are mutable; `updatedAt` alone is not a durable specification
 version. Follow [verification](../../workflow/references/verification.md) for
 version identity and retained-evidence requirements.
 
-Use the story's full URL when it lives elsewhere. For GitHub issues,
+Use the story's full URL when it lives elsewhere, or the filesystem story link
+described above. A local issue number is not a GitHub issue number; do not use
+GitHub closing keywords for it. For GitHub issues,
 [closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
 such as `Closes OWNER/REPO#123` can close an issue when the PR merges into the
 default branch. Use them only for the intended story; a plain URL also works

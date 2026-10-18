@@ -5,7 +5,12 @@ developed as three draft skills:
 
 - [workflow](skills/workflow/SKILL.md): phase contracts, verification and project memory.
 - [orchestrator](skills/orchestrator/SKILL.md): execution, project configuration and permissions; optional runtime integrations.
-- [tracker](skills/tracker/SKILL.md): specifications, workflow facts and evidence; optional GitHub integration.
+- [tracker](skills/tracker/SKILL.md): specifications, workflow facts and evidence; filesystem issues by default when no tracker is selected, with optional GitHub integration.
+
+The [filesystem tracker](skills/tracker/references/filesystem.md) stores issues
+in `.mstack/issues/` with YAML frontmatter and a Markdown body. It applies only
+when no issue tracker is selected (or filesystem is explicitly selected), not
+when a configured tracker is unavailable.
 
 To work on this repository, follow [AGENTS.md](AGENTS.md). The skill files are
 the product under development, not automatically this repository's operating

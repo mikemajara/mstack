@@ -44,7 +44,7 @@ skills/
   orchestrator/
     SKILL.md
     references/
-      configuration.md    # .mstack/config.json, model selection and run controls
+      configuration.md    # .mstack/config.json, execution settings and tracker selector
       herdr.md            # Herdr operation mapping and capability limitations
       cursor-cloud.md     # Cursor Cloud API agent/run mapping
       cursor-subagents.md # Native Cursor session delegation
@@ -52,8 +52,11 @@ skills/
   tracker/
     SKILL.md
     references/
+      filesystem.md       # Default local issues, format, identity and operations
       github.md           # Issues/PR operations, mappings and merge confirmation
       github-labels.json  # GitHub label names and display metadata
+    assets/
+      issue.md            # Markdown issue template with YAML frontmatter
     scripts/
       github/
         setup-labels.mjs  # Check, preview or apply the GitHub label mapping
@@ -64,8 +67,10 @@ target-project behavior; root `MEMORY.md` records development of mstack itself.
 
 ## Optional integrations
 
-Runtime and delegation integrations belong to orchestrator; GitHub belongs to
-tracker. An integration is a bounded set of instructions for using a concrete
+Runtime and delegation integrations belong to orchestrator; filesystem and
+GitHub integrations belong to tracker. Workflow points to tracker for its
+default issue storage; tracker owns selection and concrete operations. An
+integration is a bounded set of instructions for using a concrete
 system. It need not be a
 deterministic program. A skill may have or use no integration where its
 capabilities allow.

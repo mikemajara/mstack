@@ -12,7 +12,7 @@ transitions. Apply the same standards to every actor. Execution permissions
 belong to orchestrator; concrete work-record operations belong to tracker.
 
 Main source of truth for the project is the 1. the codebase and 2. `AGENTS.md`.
-Read project `AGENTS.md` and relevant project memory before work. 
+Read project `AGENTS.md` and relevant project memory before work.
 
 Material decisions, facts, questions and gotchas as they arise are captured in [memory](references/memory.md).
 
@@ -24,6 +24,18 @@ file under [phases](references/phases/). Use [work-item attributes](references/a
 lists its values. Concrete tracker mappings belong to tracker. Attribute values do not
 establish readiness or completion; phase contracts still apply, including their draft
 limitations.
+
+## Default issue tracking
+
+> **Use filesystem issues only when no issue tracker is selected. A configured
+> tracker being unavailable does not activate this fallback.**
+
+When no issue tracker is selected by project configuration or the current
+request, use `.mstack/issues/`. Tracker owns [selection](../tracker/SKILL.md#issue-tracker-selection)
+and the [filesystem contract](../tracker/references/filesystem.md), including
+the issue template and concrete operations. The same phase, verification and
+completion requirements apply to local and hosted stories. Issue storage does
+not supply PR hosting or waive a missing PR capability.
 
 ## Phase contracts
 

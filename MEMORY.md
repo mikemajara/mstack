@@ -7,6 +7,21 @@ the next development decision.
 
 ## Current review — 2026-10-18
 
+- [Filesystem tracking](skills/tracker/references/filesystem.md) and a bundled
+  [issue template](skills/tracker/assets/issue.md) now define the default when
+  no issue tracker is selected. Workflow states the fallback; tracker owns
+  selection and operations, with the optional selector cross-referenced from
+  project configuration. This is a contract/template pass, with no local CLI,
+  installation or activation. Single-writer operation in an authoritative
+  checkout is the v1 limit; concurrent worktree writes remain unsupported.
+- Legacy plans, setup/status, dedupe, queue and snapshot behavior were reviewed
+  for that pass. Specification sections and local inspection were adapted;
+  draft promotion states, snapshots, readiness heuristics and unrelated
+  scaffolding were not imported. Local files are canonical issues, not an
+  outage cache. QA/merge gates and unresolved non-delivery closure rules remain
+  owned by workflow. Local checks exercised the populated YAML template and
+  documented search commands, including closed files under a hidden, ignored
+  directory. No live target-project trial has been performed.
 - [Research](skills/workflow/references/phases/research.md) now explicitly includes
   feasibility questions and possible changes. Its two required gate questions
   still have draft wording.

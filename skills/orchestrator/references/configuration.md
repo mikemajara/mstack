@@ -1,7 +1,11 @@
-# Project execution configuration
+# Project configuration
 
 Use one `.mstack/config.json` at the target project root for runtime, harness,
-models, role overrides and run controls.
+models, role overrides, run controls and issue-tracker selection. Tracker owns
+the [issue-selection semantics](../../tracker/SKILL.md#issue-tracker-selection)
+of the optional `tracker.issues` key (`github` or `filesystem`). If no issue
+tracker is selected, filesystem issues are the default; a configured tracker's
+access failure does not select that fallback. PR hosting remains independent.
 
 Draft: this reference defines configuration semantics, not an executable loader.
 The runtime/harness mappings must supply concrete launch and control operations.
@@ -25,6 +29,7 @@ implicit defaults. Retain the effective settings used for the run.
 | Runtime, harness and concrete model IDs | No universal default; resolve from project settings or the current request. |
 | Model fallback order | Only the configured candidate order; a single model has no fallback. |
 | Deadline behavior | `drain`: no new dispatches; admitted workers may finish. |
+| Issue tracker | `filesystem` when no issue tracker is selected; see tracker. |
 
 `medium` is available for role overrides or explicitly configured fallback
 candidates. High/medium/low are configurable selection tiers; the same model
@@ -59,15 +64,21 @@ support changing its own model.
     }
   },
   "run": {
-    "stories": ["STORY_URL_1", "STORY_URL_2"],
+    "stories": ["STORY_REFERENCE_1", "STORY_REFERENCE_2"],
     "maxDurationMinutes": 120,
     "onDeadline": "drain"
   }
 }
 ```
 
-The model IDs and story URLs above are placeholders. Use identifiers available
-through the selected harness/account and the selected story integration.
+The model IDs and story references above are placeholders. Use identifiers
+available through the selected harness/account and the selected story
+integration. A filesystem story reference identifies the project and its
+`.mstack/issues/<number>.md` path in the authoritative checkout, not a GitHub
+issue number. The example omits `tracker.issues`, so it uses the default unless
+the current request selects a tracker. To select GitHub Issues, add
+`"tracker": { "issues": "github" }` at the top level; no tracker configuration
+file or key is required to use filesystem issues.
 
 `execution` selects default runtime and harness. Each role can override
 `runtime`, `harness`, `delegation`, `runtimeOptions` and `tier`. Resolve the role
