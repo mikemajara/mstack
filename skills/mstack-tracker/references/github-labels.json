@@ -8,7 +8,7 @@
   { "name": "phase:research", "color": "C5DEF5", "description": "Establish facts needed to shape a testable specification" },
   { "name": "phase:refinement", "color": "D4C5F9", "description": "Define scope, acceptance criteria and verification scenarios" },
   { "name": "phase:implementation", "color": "0E8A16", "description": "Implement the features the specification describes" },
-  { "name": "phase:qa", "color": "0075CA", "description": "Judge the change against its specification using evidence for identified versions" },
+  { "name": "phase:qa", "color": "0075CA", "description": "Independently judge the change against its specification using evidence for the tested commit" },
   { "name": "status:open", "color": "C2E0C6", "description": "Available and not claimed" },
   { "name": "status:doing", "color": "FBCA04", "description": "Work is actively in progress in the current phase" },
   { "name": "status:blocked", "color": "5319E7", "description": "Required input is unavailable; record the missing prerequisite and resume condition" },

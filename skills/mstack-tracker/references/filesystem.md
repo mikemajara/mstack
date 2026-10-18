@@ -10,10 +10,11 @@ provides issue storage, relationships and recorded workflow facts. PRs, QA
 records and merge confirmation require a separate integration.
 
 Draft: operations are instructions, with no bundled CLI or automatic locking.
-V1 requires one writer in a designated shared project checkout. Independent
-number allocation or concurrent issue writes across worktrees are unsupported.
-Non-delivery closure rules, including duplicate closure, remain unspecified in
-workflow; this mapping does not supply them.
+The initial version requires one writer in a designated shared project
+checkout. Independent number allocation or concurrent issue writes across
+worktrees are unsupported.
+Concurrent controller admission requires a separate locking procedure, which
+is not supplied here.
 
 ## Project and record identity
 
@@ -34,15 +35,15 @@ Retain closed files in the same directory. Do not renumber, delete or reuse
 issue numbers. Commit issue files and their updates through the project's
 permitted version-control route; preserve unrelated changes. Report local
 confirmation separately from commit or publication confirmation. Uncommitted
-records are provisional and do not supply an immutable specification version.
+records are provisional until committed through the project's chosen route.
 
 Designate one authoritative checkout for issue reads and writes before the
 first operation. Serialize allocation and updates there, including requests
 from workers in other worktrees. Give workers that location and the intended
-record/version; a branch copy is not current tracker state. If the checkout
-cannot be accessed, report the missing access rather than writing a second
+record and current contents; a branch copy is not current tracker state. If
+the checkout cannot be accessed, report the missing access rather than writing a second
 copy. Commit and publication procedures follow project policy; this contract
-does not authorize direct default-branch writes or pushes.
+does not include direct default-branch writes or pushes in the operation's scope.
 
 ## File format
 
@@ -56,11 +57,11 @@ canonical specification and issue notes, not a separate `body` YAML property.
 | `title` | Nonempty quoted string; may change without renaming the file |
 | `state` | `open` or `closed`, separate from workflow status |
 | `labels` | Array of strings, including assigned workflow attributes as `<attribute>:<value>` |
-| `assignees` | Array of project-recognized actor names; naming one does not grant execution authority |
+| `assignees` | Array of project-recognized actor names; naming one records assignment, not tool access or run scope |
 | `createdAt` | Quoted UTC ISO-8601 timestamp; retained on update |
 | `updatedAt` | Quoted UTC ISO-8601 timestamp; refreshed on every issue edit |
 
-Map assigned attributes using workflow's [vocabulary](../../workflow/references/attributes.json),
+Map assigned attributes using workflow's [vocabulary](../../mstack-workflow/references/attributes.json),
 for example `type:fix`, `priority:high`, `phase:refinement` and `status:open`.
 Use one label per assigned attribute. Replace the previous value when changing
 an attribute and preserve other labels. Resolve missing values when needed
@@ -70,7 +71,7 @@ There are no separate YAML `phase` or `status` fields and no `status:done`.
 Start from the bundled [issue template](../assets/issue.md), replacing its
 number, title and timestamp placeholders with actual values. It intentionally
 supplies no default workflow labels. Fill in content required by the current
-[phase contract](../../workflow/SKILL.md#phase-contracts); unused optional
+[phase contract](../../mstack-workflow/SKILL.md#phase-contracts); unused optional
 sections may be omitted. Placeholder text and empty headings do not satisfy
 gates. Store findings and open questions in the body and append dated,
 attributed notes for discussion. Keep the specification current rather than
@@ -121,12 +122,12 @@ matches are duplicate candidates, not proof of duplication.
    After an uncertain write, read and search current records before retrying;
    do not allocate another issue until the original outcome is reconciled.
 
-## Relationships, versions and completion
+## Relationships, QA and completion
 
 Record related issues and established duplicates as project-qualified paths
 or full remote record URLs in the body. Record a blocker with the missing
 prerequisite and observable resume condition under workflow's
-[blocked-work rules](../../workflow/references/lifecycle.md#missing-inputs-blocked-work-and-resume).
+[blocked-work rules](../../mstack-workflow/references/lifecycle.md#missing-inputs-blocked-work-and-resume).
 An assignee, label or successful file write alone proves no workflow gate.
 
 Keep PR and QA-verdict URLs in the issue's relationships section. Link from
@@ -135,23 +136,47 @@ retain the project-qualified path so its local identity is clear. Do not use
 `Closes #123` for a local issue. If a required story or specification link is
 inaccessible, report the missing capability/input under the parent contract.
 
-For a committed specification, retain the full Git commit ID plus issue path;
-read that revision's file to recover what was judged. A hosted file permalink
-to that commit can expose it to reviewers. `updatedAt`, a branch name and a
-working-tree path alone do not identify an immutable specification version.
-Follow [verification](../../workflow/references/verification.md) for changed
-versions, tested commits and retained evidence. QA execution results and the
-verdict stay on the PR; the issue links to them without duplicating the report.
+Only refinement changes the specification sections. Record a return to
+refinement in the issue notes and mark the earlier verdict as superseded on
+the PR, linking to the return, under
+[specification changes](../../mstack-workflow/references/lifecycle.md#specification-changes).
+A separate specification version is not required. A Git file permalink may
+make a committed story accessible to reviewers without adding a versioning
+requirement. Follow [verification](../../mstack-workflow/references/verification.md)
+for tested commits, invalidation and retained evidence. QA execution results
+and the verdict stay on the PR; the issue links to them without duplicating
+the report.
 
 Record phase/status changes only after validation under workflow. For delivery
-closure, follow [story completion](../../workflow/references/lifecycle.md#story-completion):
-after QA passes for the identified versions and merge is confirmed through
-the PR integration, record the merge reference in the body, set `state: closed`,
+closure, follow [story completion](../../mstack-workflow/references/lifecycle.md#story-completion):
+after QA passes for the current commit with no intervening return to refinement
+and merge is confirmed through the PR integration, record the merge reference
+in the body, set `state: closed`,
 refresh `updatedAt` and re-read the file. Keep the final phase as QA; do not
 invent a completion status. If closure fails after merge, report merge as
 confirmed and the issue update as pending, then resume that remaining update.
 
+For non-delivery closure within the request, record the decision and reason
+in the notes, and link to the original story for a duplicate. Set
+`state: closed`, refresh `updatedAt` and re-read the file. A duplicate also
+records `status:duplicate`. These outcomes do not require QA or merge and are not
+delivered work. Retain the closed file under its original number.
+
 Without a PR capability, continue independent work where possible and report
-the affected operation as unavailable. Filesystem issues do not waive workflow's
-PR, QA, evidence or merge requirements. Changing the tracker selection does
-not convert existing files into hosted issues or turn them into a cache.
+the affected delivery operation as unavailable. Filesystem issues do not waive
+workflow's PR, QA, evidence or merge requirements for delivery. Changing the
+tracker selection does not convert existing files into hosted issues or turn
+them into a cache.
+
+## Claim and release
+
+Serialize admission in the authoritative checkout. Read current records and
+worker ownership before claiming. Record the run/actor in a dated note and
+`assignees`, change `status:open` to `status:doing`, and re-read to confirm
+before dispatch. No concurrent writer may claim the same story.
+
+Release only after confirming the worker stopped and reconciling its outputs.
+Record the release, remove this run's assignment and restore `status:open` for
+available work on an open story; preserve a validated blocked or duplicate
+disposition. If a worker may remain active, retain its ownership and report the uncertainty.
+Changing labels or assignees alone is not a lock for concurrent controllers.

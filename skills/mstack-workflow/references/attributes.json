@@ -53,7 +53,7 @@
       },
       {
         "label": "qa",
-        "description": "Judge the change against the specification using evidence for identified versions."
+        "description": "Independently judge the change against the specification using evidence for the tested commit."
       }
     ]
   },

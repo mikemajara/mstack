@@ -7,7 +7,7 @@ Draft: detailed record format and validation questions are not specified.
 Connect each acceptance criterion to its verification scenarios. A scenario
 identifies prerequisites, inputs/actions and expected observable results.
 An execution record adds observed results, retained evidence and the tested
-change/specification versions. Identify the tested build or instance when it
+commit. Identify the tested build or instance when it
 affects the result. Retain evidence after cleanup.
 
 Record QA execution results, evidence links and the verdict on the PR as defined
@@ -23,5 +23,8 @@ required scenario. Missing required evidence blocks a pass; established code def
 return to [implementation][phase:implementation] and specification holes return to
 [refinement][phase:refinement]. Apply the same standards regardless of actor or harness.
 
-A verdict applies to the identified versions. Changed versions require
-revalidation; old or replayed evidence is not automatically current proof.
+A verdict applies to the tested commit. A change to that commit requires
+revalidation before merge; old or replayed evidence is not automatically
+current proof. A return to refinement invalidates earlier QA verdicts under
+[specification changes](lifecycle.md#specification-changes). Only refinement
+changes the specification; a separate specification version is not required.

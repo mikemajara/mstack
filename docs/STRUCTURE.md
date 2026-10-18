@@ -1,5 +1,9 @@
 # mstack structure
 
+This is a development guide for this repository. It maps where contributors
+maintain mstack's source files; it is not a target-project requirement or part
+of the installed skills' operating instructions.
+
 Exactly three skills. Draft files exist; incomplete contracts are marked in
 place. Maintain behavior in the owning skill and use this document as a map.
 
@@ -21,15 +25,15 @@ memory contracts. See [AGENTS.md](../AGENTS.md) for the authoring rules.
 
 | Skill | Owns | Must not own |
 | --- | --- | --- |
-| [workflow](../skills/workflow/SKILL.md) | Phase contracts, readiness and verification criteria, valid transitions, work shaping and default project memory | Runtime tools, execution authority or tracker mappings |
-| [orchestrator](../skills/orchestrator/SKILL.md) | Selection, admission, dispatch, limits, permissions, waiting, cancellation, reconciliation and reporting | A competing lifecycle or weaker validation |
-| [tracker](../skills/tracker/SKILL.md) | Specifications, validated workflow facts, evidence and relationships through concrete integrations | Product decisions, readiness rules or completion inferred from tool status |
+| [mstack-workflow](../skills/mstack-workflow/SKILL.md) | Phase contracts, readiness and verification criteria, valid transitions, work shaping and default project memory | Runtime tools, role scope or tracker mappings |
+| [mstack-orchestrator](../skills/mstack-orchestrator/SKILL.md) | Selection, admission, dispatch, limits, role scope, waiting, cancellation, reconciliation and reporting | A competing lifecycle or weaker validation |
+| [mstack-tracker](../skills/mstack-tracker/SKILL.md) | Specifications, validated workflow facts, evidence and relationships through concrete integrations | Product decisions, readiness rules or completion inferred from tool status |
 
 ## Files
 
 ```text
 skills/
-  workflow/
+  mstack-workflow/
     SKILL.md
     references/
       attributes.json     # Work-item type, priority, phase and status vocabulary
@@ -39,9 +43,9 @@ skills/
         refinement.md     # Scope, acceptance criteria and verification brief
         implementation.md # Specified features implemented in code
         qa.md             # Behavioral judgment and rework
-      verification.md     # Shared evidence and version traceability
+      verification.md     # Shared evidence, tested commits and invalidation
       memory.md           # Default read/capture and deliberate promotion
-  orchestrator/
+  mstack-orchestrator/
     SKILL.md
     references/
       configuration.md    # .mstack/config.json, execution settings and tracker selector
@@ -49,7 +53,7 @@ skills/
       cursor-cloud.md     # Cursor Cloud API agent/run mapping
       cursor-subagents.md # Native Cursor session delegation
       cmux.md             # macOS/TUI command mappings and capability limitations
-  tracker/
+  mstack-tracker/
     SKILL.md
     references/
       filesystem.md       # Default local issues, format, identity and operations
@@ -77,8 +81,8 @@ capabilities allow.
 
 The owning skill defines the general integration contract and handles
 availability/failure policy. Concrete references describe that system's actual
-operations and constraints. Runtime/project policy determines execution and
-decision authority; workflow supplies validation standards for every actor.
+operations and constraints. The current request and project instructions define
+role scope; workflow supplies validation standards for every actor.
 Tracker defines missing-access and partial-operation handling; orchestrator
 defines capability checks and execution controls. Installed cross-skill
 resolution and complete runtime/harness mappings remain pending.

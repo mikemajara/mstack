@@ -2,10 +2,12 @@
 entry: true
 output: specification
 forward: implementation
-returns: research,implementation
+returns: [research]
 ---
 
 # Refinement
+
+Draft: gate wording remains under review. An unspecified gate is not a pass.
 
 ## Entry prerequisites
 
@@ -15,6 +17,9 @@ Stories in [refinement][phase:refinement] request a change in the project that i
 
 Stories in [refinement][phase:refinement] contain a specification with the goal, what is in scope, what is out
 of scope, testable acceptance criteria, and verification scenarios.
+
+Only this phase changes the specification. A return here invalidates earlier
+QA verdicts under [specification changes](../lifecycle.md#specification-changes).
 
 ## Exit validation
 

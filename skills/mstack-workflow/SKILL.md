@@ -1,17 +1,26 @@
 ---
-name: workflow
-description: Define and follow software work phases, readiness gates, verification requirements and project memory. Use when researching, refining, implementing or validating a work item. Use when adding tasks or stories, anything that has to do with the software development lifecycle is captured in this skill.
+name: mstack-workflow
+description: Define and follow story phases, readiness gates, verification requirements and project memory. Use when researching, refining, implementing or validating stories, or shaping a new story.
 ---
 
-# Workflow
+# mstack-workflow
+
+Workflow holds the rules: phases, gates, transitions and memory. Orchestrator
+coordinates stories through those phases. Tracker performs record operations.
+These skills guide behavior; access is controlled by the environment the actor
+runs in.
 
 Draft: phase contracts are incomplete.
 
 Own phase definitions, prerequisites, required outputs, exit validation and valid
-transitions. Apply the same standards to every actor. Execution permissions
-belong to orchestrator; concrete work-record operations belong to tracker.
+transitions. Apply the same standards to every actor. Use workflow directly
+when performing a phase; it requires neither of the other skills to apply its
+rules. To run stories through the pipeline, use
+[mstack-orchestrator](../mstack-orchestrator/SKILL.md). For record operations, use
+[mstack-tracker](../mstack-tracker/SKILL.md). Both follow workflow's contracts.
 
-Main source of truth for the project is the 1. the codebase and 2. `AGENTS.md`.
+Inspect the codebase for current behavior and follow project `AGENTS.md` for
+project instructions.
 Read project `AGENTS.md` and relevant project memory before work.
 
 Material decisions, facts, questions and gotchas as they arise are captured in [memory](references/memory.md).
@@ -25,14 +34,18 @@ lists its values. Concrete tracker mappings belong to tracker. Attribute values 
 establish readiness or completion; phase contracts still apply, including their draft
 limitations.
 
-## Default issue tracking
+## Project layout and issue tracking
+
+Project memory lives in `.mstack/memory.md`. Optional `.mstack/config.json`
+holds project settings; execution settings are needed only when coordinating
+workers. Local stories use `.mstack/issues/` under the selection rules below.
 
 > **Use filesystem issues only when no issue tracker is selected. A configured
 > tracker being unavailable does not activate this fallback.**
 
 When no issue tracker is selected by project configuration or the current
-request, use `.mstack/issues/`. Tracker owns [selection](../tracker/SKILL.md#issue-tracker-selection)
-and the [filesystem contract](../tracker/references/filesystem.md), including
+request, use `.mstack/issues/`. Tracker owns [selection](../mstack-tracker/SKILL.md#issue-tracker-selection)
+and the [filesystem contract](../mstack-tracker/references/filesystem.md), including
 the issue template and concrete operations. The same phase, verification and
 completion requirements apply to local and hosted stories. Issue storage does
 not supply PR hosting or waive a missing PR capability.
@@ -50,14 +63,19 @@ Read the reference for the phase being performed:
 | Define scenarios or judge evidence | [Verification](references/verification.md) |
 
 [Implementation][phase:implementation] complete means ready for [QA][phase:qa].
-[QA][phase:qa] passing requires evidence recorded on the PR. After QA passes,
-merge the PR, then close the story under
+[QA][phase:qa] passing requires an independent actor and evidence recorded on
+the PR. Delivery completion requires merge followed by confirmed story closure under
 [story completion](references/lifecycle.md#story-completion). A tracker field
-alone does not establish completion.
+alone does not establish completion. The lifecycle defines the delivery
+sequence; the current request determines whether the actor performs merge and
+closure. Orchestrator defaults to proposing merge after QA passes.
 
 ## Definitions
 
-An actor: is a human or agent that works on a project. They both should comply with the rules stated in this workflow lifecycle.
+An actor is a human or agent that works on a project. Both follow this
+workflow's contracts. For independent QA, use a different human or a separate
+agent session/task that did not implement the change. Renaming or resuming
+the implementation session in a QA role does not make it a different actor.
 
 Attribute references use `[name][attribute:value]`, e.g.
 `[implementation][phase:implementation]` or `[blocked][status:blocked]`.

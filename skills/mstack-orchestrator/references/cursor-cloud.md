@@ -39,7 +39,7 @@ the explicit model rather than inheriting Cursor's account default. Retain
 the selected target and returned identities before another action.
 
 Resolve the intended branch under
-[implementation](../../workflow/references/phases/implementation.md#required-outputs).
+[implementation](../../mstack-workflow/references/phases/implementation.md#required-outputs).
 For an established story branch, the API's `repos[].startingRef` with
 `workOnCurrentBranch: true` targets that branch. Verify the ref is the intended
 story branch before enabling direct writes. With `prUrl`, that option targets

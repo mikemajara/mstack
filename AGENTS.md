@@ -7,10 +7,10 @@ being developed; they do not automatically govern development of this repository
 Follow this `AGENTS.md` and the user's current instructions when working here.
 Read `README.md`, `MEMORY.md` and `docs/STRUCTURE.md` before making changes.
 
-The three skill roots are `skills/workflow/`, `skills/orchestrator/` and
-`skills/tracker/`. `docs/STRUCTURE.md` maps ownership and files; behavior belongs
+The three skill roots are `skills/mstack-workflow/`, `skills/mstack-orchestrator/` and
+`skills/mstack-tracker/`. `docs/STRUCTURE.md` maps ownership and files; behavior belongs
 in the owning skill. Root `MEMORY.md` holds this project's continuity. The
-memory convention described in `skills/workflow/references/memory.md` is draft
+memory convention described in `skills/mstack-workflow/references/memory.md` is draft
 product behavior, not an instruction to move this repository's memory.
 
 ## Developing references
@@ -28,8 +28,12 @@ pass. Use examples to check general rules, not to encode the example as policy.
 
 When a change affects phase names or transitions, check the shared vocabulary,
 lifecycle and affected phase contracts together. Use the attribute naming
-convention in `skills/workflow/SKILL.md`. Keep lifecycle validity separate from
-execution authority, harness tools and concrete tracker mappings.
+convention in `skills/mstack-workflow/SKILL.md`. Keep lifecycle validity separate from
+role scope, harness tools and concrete tracker mappings. For each forward
+handoff, the source's exit must supply the destination's entry prerequisites
+and preserve required outputs. Check return paths separately; direct entry
+may have different prerequisites from a handoff. Keep overlapping entry and
+exit requirements consistent so each phase reference stands alone.
 
 Distributed skill content should guide its eventual user. Keep authoring
 discussion, review progress and open design questions in `MEMORY.md`, rather

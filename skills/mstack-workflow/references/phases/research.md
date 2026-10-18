@@ -6,6 +6,8 @@ forward: refinement
 
 # Research
 
+Draft: gate wording remains under review. An unspecified gate is not a pass.
+
 ## Entry prerequisites
 
 Stories in [research][phase:research] identify a problem, a requested capability, or a possible change in

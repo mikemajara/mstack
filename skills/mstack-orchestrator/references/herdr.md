@@ -69,7 +69,7 @@ reconciliation procedure.
 Retain the server/session, pane, returned agent identity and any reported
 native session identity with the run's story/phase assignment. Names follow
 the live occupant, so verify the current occupant before continuation or stop.
-Reusing a pane does not authorize resuming an unrelated conversation.
+Reusing a pane does not select an unrelated conversation for continuation.
 
 For a wait that returns before the task settles, inspect the recorded worker
 and continue observation rather than submit the mandate again:

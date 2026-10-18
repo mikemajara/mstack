@@ -4,7 +4,7 @@ Use for stories stored in GitHub Issues, for PRs hosted on GitHub, or both.
 Follow the parent [tracker contract](../SKILL.md). A story stored elsewhere
 keeps its identity and specification in that system; use this integration only
 for its GitHub records and link back to the story's full URL. For
-[filesystem stories](filesystem.md#relationships-versions-and-completion), use
+[filesystem stories](filesystem.md#relationships-qa-and-completion), use
 an accessible repository file URL and retain the project-qualified issue path.
 
 Workflow owns phase prerequisites, required content, validation and completion.
@@ -40,15 +40,15 @@ previous export does not substitute for a failed current read.
 | Workflow record | GitHub representation |
 | --- | --- |
 | Story identity | Repository plus issue number and full issue URL, when Issues stores the story |
-| Specification | Issue body; content follows the applicable [phase contract](../../workflow/SKILL.md#phase-contracts) |
-| Phase findings and holds | Issue body or comment URLs; content follows the applicable phase contract and [lifecycle](../../workflow/references/lifecycle.md#missing-inputs-blocked-work-and-resume) |
+| Specification | Issue body; content follows the applicable [phase contract](../../mstack-workflow/SKILL.md#phase-contracts) |
+| Phase findings and holds | Issue body or comment URLs; content follows the applicable phase contract and [lifecycle](../../mstack-workflow/references/lifecycle.md#missing-inputs-blocked-work-and-resume) |
 | Change | PR URL, head branch, tested commit and target base branch |
-| QA | PR comment and evidence URLs; content follows [QA outputs](../../workflow/references/phases/qa.md#required-outputs) |
+| QA | PR comment and evidence URLs; content follows [QA outputs](../../mstack-workflow/references/phases/qa.md#required-outputs) |
 | Relationships | Cross-links in issue/PR bodies and QA-comment URLs, under the parent tracker contract |
-| Story completion | GitHub issue state when Issues stores the story; closure follows [workflow completion](../../workflow/references/lifecycle.md#story-completion) |
+| Story completion | GitHub issue state when Issues stores the story; closure follows [workflow completion](../../mstack-workflow/references/lifecycle.md#story-completion) |
 
 Map each assigned workflow attribute to a label named `<attribute>:<value>`.
-The [workflow vocabulary](../../workflow/references/attributes.json) defines
+The [workflow vocabulary](../../mstack-workflow/references/attributes.json) defines
 meaning; [github-labels.json](github-labels.json) supplies the GitHub names,
 colors and short display descriptions.
 
@@ -73,7 +73,7 @@ Locate this installed tracker skill's directory and invoke its bundled
 repository using the Issues attribute mapping. It requires Node.js and `gh`.
 
 ```bash
-tracker_skill="/absolute/path/to/installed/tracker"
+tracker_skill="/absolute/path/to/installed/mstack-tracker"
 node "$tracker_skill/scripts/github/setup-labels.mjs" --repo "$repo" --check
 node "$tracker_skill/scripts/github/setup-labels.mjs" --repo "$repo" --dry-run
 node "$tracker_skill/scripts/github/setup-labels.mjs" --repo "$repo" --apply
@@ -127,7 +127,7 @@ gh issue edit "$issue" --repo "$repo" \
 ```
 
 The label edits record updates validated under the
-[workflow lifecycle](../../workflow/references/lifecycle.md). Re-read labels
+[workflow lifecycle](../../mstack-workflow/references/lifecycle.md). Re-read labels
 before updating them and remove the actual prior value. Store a workflow hold
 record or a duplicate relationship in the issue body or a linked comment.
 
@@ -135,9 +135,21 @@ Read the issue after writing to confirm its body, labels and relationships.
 After creating a story, retain the returned URL and use its number for further
 operations. Search current records before retrying an uncertain creation.
 
-## PRs, QA and version identity
+## Claims
 
-Use [implementation outputs](../../workflow/references/phases/implementation.md#required-outputs)
+Before dispatch, read the story and check existing claims and workers. Record
+the owning run/actor in an issue comment and update `status:open` to
+`status:doing` using the label operation above; re-read both to confirm the
+claim. Prepare comment content in a file and use
+`gh issue comment "$issue" --repo "$repo" --body-file /tmp/claim.md`.
+On release, record the stopped worker and reconciled result, then restore
+`status:open` only for available work on an open story. Keep validated blocked
+or duplicate dispositions. Labels and comments do not provide atomic locking; concurrent
+controller admission is not supported by this mapping.
+
+## PRs, QA and tested commits
+
+Use [implementation outputs](../../mstack-workflow/references/phases/implementation.md#required-outputs)
 for branch and PR requirements. GitHub's create, edit and comment operations
 accept the prepared body files:
 
@@ -153,28 +165,36 @@ policy. PR creation returns a URL to use for the story/PR relationship through
 the selected story integration.
 
 Use a PR comment as the GitHub location for the
-[QA output](../../workflow/references/phases/qa.md#required-outputs). Comment
+[QA output](../../mstack-workflow/references/phases/qa.md#required-outputs). Comment
 creation returns the URL for the story's verdict link. The PR's `headRefOid`
-identifies its head commit. Issue URLs identify stories, while issue bodies
-and `updatedAt` are mutable; `updatedAt` alone is not a durable specification
-version. Follow [verification](../../workflow/references/verification.md) for
-version identity and retained-evidence requirements.
+identifies its head commit. Issue URLs identify stories. Only refinement
+changes the issue's specification; a return to refinement invalidates earlier
+QA verdicts under [specification changes](../../mstack-workflow/references/lifecycle.md#specification-changes).
+Record the return in the issue body or a comment and mark the earlier verdict
+as superseded through a PR comment linking to that return. A separate
+specification version is not required. Follow
+[verification](../../mstack-workflow/references/verification.md) for tested
+commits and retained evidence.
 
 Use the story's full URL when it lives elsewhere, or the filesystem story link
 described above. A local issue number is not a GitHub issue number; do not use
 GitHub closing keywords for it. For GitHub issues,
 [closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
 such as `Closes OWNER/REPO#123` can close an issue when the PR merges into the
-default branch. Use them only for the intended story; a plain URL also works
-for linking. In either case, confirm closure after merge. Other trackers need
+default branch. Use them only for intended stories whose closure is included
+in the request; use plain URLs for links otherwise. Before merge, check for
+automatic issue closures and keep them within the requested scope. Confirm
+any intended closure after merge. Other trackers need
 their own closure operation.
 
 ## Merge and story closure
 
-Workflow's [story completion](../../workflow/references/lifecycle.md#story-completion)
+Workflow's [story completion](../../mstack-workflow/references/lifecycle.md#story-completion)
 determines when merge and closure may occur. The commands below perform an
-operation cleared under that contract and authorized by orchestrator and
-project policy. Use the repository's permitted merge method and honor GitHub's
+operation within the current request and project instructions after that
+contract passes. Orchestrator defaults to proposing merge after passing QA;
+having these commands does not include merge or closure in a run's scope.
+Use the repository's permitted merge method and honor GitHub's
 required checks and reviews.
 
 For a repository using squash merges, the operation is:
@@ -189,11 +209,12 @@ Use the repository's permitted merge method. The
 [head-match option](https://cli.github.com/manual/gh_pr_merge) prevents merging
 an unexpected head. A queued or auto-merge request is pending until the PR state
 is `MERGED`; the read returns its merge commit identity and time. Workflow's
-[verification judgment](../../workflow/references/verification.md#judgment)
-governs changes to validated versions.
+[verification judgment](../../mstack-workflow/references/verification.md#judgment)
+governs changes to the tested commit and invalidated QA verdicts.
 
-When the story is a GitHub issue, verify any automatic closure and close it
-explicitly if still open once the workflow completion contract is satisfied:
+When delivery closure is included in the request and the story is a GitHub
+issue, verify any automatic closure and close it explicitly if still open
+once the workflow completion contract is satisfied:
 
 ```bash
 gh issue close "$issue" --repo "$repo" --reason completed
@@ -205,3 +226,11 @@ story integration, including when GitHub closed the issue automatically. If
 story storage uses another system, perform and confirm closure through that integration.
 A failed closure leaves the merge confirmed and the story update pending;
 report that partial result and resume from the remaining operation.
+
+For a decision not to proceed or an established duplicate, record the reason
+and the original story link for a duplicate under workflow's non-delivery
+closure rule. When closure is within the request, use
+`gh issue close "$issue" --repo "$repo" --reason "not planned"`, then read
+the issue to confirm closure and its recorded disposition. Do not use
+`--reason completed` or imply a delivered change for these outcomes. A
+duplicate also records `status:duplicate`, preserving unrelated labels.

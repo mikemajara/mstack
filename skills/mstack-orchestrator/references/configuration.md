@@ -2,7 +2,7 @@
 
 Use one `.mstack/config.json` at the target project root for runtime, harness,
 models, role overrides, run controls and issue-tracker selection. Tracker owns
-the [issue-selection semantics](../../tracker/SKILL.md#issue-tracker-selection)
+the [issue-selection semantics](../../mstack-tracker/SKILL.md#issue-tracker-selection)
 of the optional `tracker.issues` key (`github` or `filesystem`). If no issue
 tracker is selected, filesystem issues are the default; a configured tracker's
 access failure does not select that fallback. PR hosting remains independent.
@@ -10,8 +10,8 @@ access failure does not select that fallback. PR hosting remains independent.
 Draft: this reference defines configuration semantics, not an executable loader.
 The runtime/harness mappings must supply concrete launch and control operations.
 The durable run-state file format and concurrent controller locking are not
-specified. `.mstack/` does not relocate project memory by itself; follow
-[workflow memory](../../workflow/references/memory.md) and project instructions.
+specified. Project memory lives in `.mstack/memory.md` under
+[workflow memory](../../mstack-workflow/references/memory.md) and project instructions.
 
 ## Resolution and defaults
 
@@ -27,6 +27,7 @@ implicit defaults. Retain the effective settings used for the run.
 | Orchestrator, research and refinement tier | `high` |
 | Implementation and QA tier | `low` |
 | Runtime, harness and concrete model IDs | No universal default; resolve from project settings or the current request. |
+| Current-session work | No separate runtime is required when an actor performs phases directly. Launch settings are required when starting separate workers. |
 | Model fallback order | Only the configured candidate order; a single model has no fallback. |
 | Deadline behavior | `drain`: no new dispatches; admitted workers may finish. |
 | Issue tracker | `filesystem` when no issue tracker is selected; see tracker. |
@@ -144,7 +145,7 @@ candidate list is exhausted, report the execution hold and resume condition.
 
 | Setting or signal | Meaning |
 | --- | --- |
-| `run.stories` | Optional ordered series of story references. Dispatch only within that series. If omitted, use the backlog scope authorized for this run; absence does not authorize an unrestricted backlog. |
+| `run.stories` | Optional ordered series of story references. Dispatch only within that series. If omitted, use the backlog scope requested for this run; omission does not expand that scope. |
 | `run.maxDurationMinutes` | Optional positive elapsed-time admission limit, measured from the retained run start. Resuming the same run does not restart its clock. |
 | `run.onDeadline` | `drain` by default; `halt` requests cancellation of active workers at the deadline and requires runtime support. |
 | Explicit user halt | Immediately closes admission and requests cancellation. The runtime maps the stop signal to its worker control mechanism. |
@@ -154,8 +155,8 @@ story series has no work. For a series, stop when no further eligible action
 remains within it; retain unfinished stories and their reasons. Workflow
 determines completed, returned and blocked outcomes.
 
-An omitted duration means no elapsed-time limit, not permission to exceed other
-run controls. Completion of the authorized work, an explicit halt or any
+An omitted duration means no elapsed-time limit. Other run controls still
+apply. Completion of the requested work, an explicit halt or any
 configured limit still ends dispatch. A bounded series and a two-hour limit
 can be used together. With `drain`, the last admitted worker can finish after
 two hours; `halt` is the choice for requesting cancellation at that point.

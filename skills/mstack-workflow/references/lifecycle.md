@@ -24,27 +24,53 @@ flowchart TD
     QA -->|Code defect| Implement
     QA -->|Specification hole| Refine
     QA -->|QA passes and the PR is merged| Closed[Story closed]
+    Disposition[Decision not to proceed or duplicate in any phase] -->|Reason recorded; duplicate links to original| NotDelivered[Story closed without delivery]
 ```
 
 Arrows summarize gates; read the destination phase contract before advancing.
 
 ## Story completion
 
-After [QA][phase:qa] passes for the current change and specification versions,
-merge the PR. Close the story only after confirming that the validated change
-has been merged. A passing verdict alone does not close the story, and merging
+For delivery, [QA][phase:qa] must pass for the current commit with no intervening
+return to refinement. Merge precedes closure. Close the story as delivered
+only after confirming that the validated change has been merged. A passing
+verdict alone does not close the story, and merging
 without passing QA does not satisfy completion.
 
 Until merge is confirmed, the story remains in [QA][phase:qa]. Apply the missing
-input and blocked-work rules below when the merge cannot proceed. Execution
-authority follows orchestrator and project policy.
+input and blocked-work rules below when the merge cannot proceed. Merge and
+closure must be within the current request and project instructions;
+orchestrator defaults to proposing merge after passing QA.
+
+A decision not to proceed closes the story without delivery, with the reason
+recorded; a duplicate also links to the original story. These dispositions do
+not require QA or merge and must not be recorded as delivered work.
 
 A story is a work item independent of the system that stores it. Tracker owns
 the concrete mapping of story closure and links between the story and PR.
 
+## Specification changes
+
+Only [refinement][phase:refinement] changes the specification, including scope,
+acceptance criteria and verification scenarios. Existing specifications may
+satisfy direct-entry prerequisites without being rewritten. A return to
+refinement invalidates earlier QA verdicts for the story, even if the
+specification has not yet changed. Record that return with the story so its
+verdict link cannot be mistaken for a current pass.
+
+If the specification was changed outside refinement, reconcile the change in
+refinement and obtain a new QA verdict before merge. Changes to the tested
+commit also require [revalidation](verification.md#judgment). No separate
+specification version identifier is required.
+
 ## Phase file header
 
-Each phase contract starts with a header. The header names the allowed destinations. The phase body states when each destination applies. One value and a list are the same kind of fact: the phases that are allowed. A list means the story moves to one of the listed phases, chosen by the condition in the body. A missing field means that destination is not part of the contract.
+Each phase contract starts with a YAML header. The header names the allowed
+destinations; the body states when each applies. `forward` names one phase;
+`returns` is a YAML list, including when there is only one allowed return.
+Choose the destination using the condition in the body. A missing field means
+that destination is not part of the contract. Story closure is a lifecycle
+outcome, not another phase.
 
 | Field | Meaning |
 | --- | --- |
@@ -59,6 +85,12 @@ Each phase specifies entry prerequisites, required outputs, exit validation and
 valid destinations. A transition must satisfy both the source's exit requirements
 and destination's entry requirements; reference shared requirements rather than
 defining competing versions.
+
+For a forward handoff, the source's exit supplies the destination's entry
+prerequisites and preserves required outputs. Readiness for QA also needs an
+independent actor assigned before QA starts. Direct-entry and return paths
+are checked on their own terms; they need not reproduce an earlier phase's
+successful exit.
 
 Required gate questions need supported answers meeting their pass conditions.
 Unknown is not a pass. An applicability exception must be explicitly allowed by
