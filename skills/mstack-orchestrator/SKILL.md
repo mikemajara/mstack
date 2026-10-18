@@ -17,12 +17,12 @@ preserving their names and layout. Orchestration requires workflow and tracker;
 if either linked contract is missing, stop the affected operation and report
 the incomplete installation rather than substituting another version.
 
-Draft: no live runtime trial has validated worker-termination observation and
-reconciliation across the documented integrations. Apply the uncertainty
-policy below: if a worker's outcome cannot be confirmed, retain its ownership
-and do not dispatch replacement work until reconciliation. Integration
-references state their concrete stop and observation limits; the trials below
-must verify those behaviors on the selected runtime/harness pairings.
+Validation pending: no live Herdr trial has validated worker-termination
+observation and reconciliation. This does not block the documented v1 runtime
+mapping. Apply the uncertainty policy below: if a worker's outcome cannot be
+confirmed, retain its ownership and do not dispatch replacement work until
+reconciliation. Integration references state their concrete stop and
+observation limits; future trials should verify them on selected pairings.
 
 Follow workflow phase contracts for readiness, validation and transitions.
 Own selection, admission, dispatch, limits, role scope, waiting, cancellation,
@@ -67,12 +67,12 @@ runtime. Runtime/harness launch settings apply when starting workers. If this
 actor implements the change, hand QA to a different actor; a lone implementer
 can proceed to the QA handoff but cannot supply its independent verdict.
 
-Runtime means the execution mechanism, such as Herdr, Cursor Cloud or cmux.
+For mStack 0.1.0, Herdr is the supported execution runtime. Cursor Cloud and
+native Cursor subagents are deferred and unsupported; cmux is not included.
 Agent harness means the client running the agent, such as `agent-cursor`,
 `codex` or `fx`. Model tiers are project-configurable selections within those
-harnesses. A runtime may constrain which harnesses it supports. Cursor native
-subagents are a capability of a Cursor session, whose operation mapping must
-be supplied for the execution context in use.
+harnesses. Herdr's documented capabilities and harness mappings constrain
+which combinations can be used.
 
 An integration declares supported combinations and maps the following
 operations to available tools. Shared operation names do not imply that every
@@ -130,8 +130,8 @@ new work starts with a fresh worker from the current project records and the
 intended branch/workspace.
 Do not describe work as continuing after this session ends.
 
-Draft: no live autonomous runtime trial has validated this continuation
-contract. Validation must observe an actual next dispatch after a phase
+Validation pending: no live autonomous runtime trial has validated this
+continuation contract. Validation must observe an actual next dispatch after a phase
 handoff, after a worker wait, and when one requested story is blocked while
 another remains eligible. It must also confirm a durable session checkpoint
 and a fresh later invocation that reads current records before deciding what
@@ -266,9 +266,11 @@ complete. Use workflow and tracker contracts for recorded facts.
 | Runtime/context | Reference or limitation |
 | --- | --- |
 | Herdr | [Execution mapping](references/herdr.md), including current capability limits |
-| Cursor Cloud | [API agent/run mapping](references/cursor-cloud.md) |
-| Cursor native subagents | [Current-session delegation mapping](references/cursor-subagents.md) |
-| cmux | [macOS and TUI command mappings](references/cmux.md), selected for the installed interface |
+| fx CLI | [Native CLI harness mapping](references/fx.md); use through a supported runtime |
+
+Cursor Cloud and native Cursor subagents have research references, but are not
+supported in mStack 0.1.0. Do not select them for a run. cmux is not part of
+this release.
 
 Integration helpers, when needed, belong under `scripts/<integration>/` within
 this skill. Runtime references describe tool operations and constraints; they

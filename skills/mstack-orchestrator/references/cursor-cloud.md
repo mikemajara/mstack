@@ -1,21 +1,25 @@
-# Cursor Cloud integration
+# Deferred: Cursor Cloud integration
 
-Use with runtime `cursor-cloud` and harness `agent-cursor`. Follow the parent
+Cursor Cloud is not supported in mStack 0.1.0. This reference preserves the
+researched API mapping for future work; do not select `cursor-cloud` as a
+runtime or rely on this mapping for unattended work. It has not had a live
+runtime trial.
+
+If reconsidered in a later release, use with runtime `cursor-cloud` and harness
+`agent-cursor`. Follow the parent
 [execution contract](../SKILL.md#execution-integration-contract) and
 [configuration](configuration.md). Workflow owns the assigned phase and its
 outputs; use tracker for story, PR and evidence records.
 
-Draft: this mapping has no live runtime trial. Cursor documents Cloud Agents
-API v1 as public beta and gives no cancellation-latency guarantee. Treat it as
-conditionally usable for unattended runs: `drain` is the default; configure a
-hard halt only when the selected runtime can request cancellation, observe its
-terminal outcome and retain controller admission through reconciliation and
-checkpointing. Do not promise recovery after an abrupt controller loss. Agent
-creation supports an optional client-supplied ID for duplicate prevention,
-but follow-up runs have no client-supplied run ID. Reconcile ambiguous
-requests from API records before retrying; hold if the outcome remains
-uncertain. Cross-session follow-up on a previous agent is disallowed by the
-parent orchestrator contract.
+Cursor documents Cloud Agents API v1 as public beta and gives no
+cancellation-latency guarantee. If this mapping is reconsidered for a later
+release, preserve `drain` as the default and require observed cancellation and
+terminal state before checkpointing after a hard halt. Do not promise recovery
+after abrupt controller loss. Agent creation supports an optional
+client-supplied ID for duplicate prevention, but follow-up runs have no
+client-supplied run ID. Reconcile ambiguous requests from API records before
+retrying; hold if the outcome remains uncertain. Cross-session follow-up on a
+previous agent is disallowed by the parent orchestrator contract.
 
 ## Availability and target
 

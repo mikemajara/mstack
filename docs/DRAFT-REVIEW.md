@@ -2,18 +2,19 @@
 
 This temporary authoring note records decisions and remaining validation work;
 it is not an mStack product contract. The shared behavior decisions are in
-`Resolved during this review`. The remaining `Draft:` markers identify runtime
-or packaging behavior without direct validation. Remove or rewrite each marker
-when its evidence is obtained, or record a deliberate deferral in project
-memory. Remove this queue when its validation items are completed or deliberately
-deferred with a clear home in project memory.
+`Resolved during this review`. Remaining `Validation pending:` markers mean a
+runtime or filesystem-lock behavior lacks direct validation; they do not
+identify an open product decision. Clear a marker when evidence is obtained, or
+record a deliberate deferral in project memory. Remove this queue when its
+validation items are completed or deliberately deferred with a clear home in
+project memory.
 
 ## Settled decisions to preserve
 
 - An autonomous controller session should close with a durable checkpoint.
 - A later autonomous session starts fresh and makes its decision from recorded
-  project state in GitHub or local project files. Do not rely on an open Herdr,
-  cmux or harness pane to recover what happened.
+  project state in GitHub or local project files. Do not rely on an open runtime
+  pane or harness session to recover what happened.
 - Treat GitHub or local project records as the state of the project. Do not
   assume workers retain current context across autonomous runs; inspect current
   recorded state before continuing work.
@@ -38,10 +39,10 @@ deferred with a clear home in project memory.
   scope, remaining work and uncertain-worker reconciliation condition where
   those facts are not already represented.
 
-## Discussion queue
+## Validation queue
 
-Work through one marker at a time. Each item identifies the file with the
-marker and the decision needed before changing or removing it.
+Review these together when planning a supervised validation pass. Ask for a
+product decision only if the evidence exposes an actual contract gap.
 
 ## Resolved during this review
 
@@ -101,29 +102,25 @@ marker and the decision needed before changing or removing it.
 - [Herdr integration](../skills/mstack-orchestrator/references/herdr.md) maps
   Codex and Cursor model flags, leaves other harnesses unsupported until
   verified, requires project exclusivity from the external scheduler, and
-  states that hard halt needs harness-specific process-tree proof.
+  states that hard halt needs harness-specific process-tree proof. It is the
+  supported v1 runtime based on its published CLI documentation; no live trial
+  has been run.
 - [Controller admission](../skills/mstack-orchestrator/SKILL.md) requires
   launcher/scheduler exclusivity and disallows concurrent controller sessions.
   A fresh session may take over in recovery-only mode after the prior controller
   ends, while dispatch and claim reassignment wait for worker reconciliation.
-  The shared behavioral protocol is sufficient; no shared lock API is required.
+  The shared behavioral protocol leaves enforcement to the runtime mapping.
   Runtime-specific enforcement remains a validation item: the launcher must
   deny concurrent admission, permit recovery-only takeover only after the old
   controller ends, and retain admission through checkpointing.
-- [Cursor Cloud](../skills/mstack-orchestrator/references/cursor-cloud.md)
-  follows the cross-session worker boundary: a later controller observes or
-  cancels the previous agent as needed, reconciles its outcome, then uses a
-  fresh agent. The API remains public beta and has not had a live runtime trial.
-- [Cursor native subagents](../skills/mstack-orchestrator/references/cursor-subagents.md)
-  use the actual exposed task schema rather than promising fixed argument
-  names; task resume is restricted to the same assignment in one controller
-  session. Unattended use follows the shared default `drain` behavior;
-  `onDeadline: halt` requires verified cancellation support.
+- Cursor Cloud and native Cursor subagents are deferred and unsupported in
+  mStack 0.1.0. Their reference files preserve researched behavior for a future
+  release and must not be selected in this release.
 - [Filesystem tracker](../skills/mstack-tracker/references/filesystem.md) is
-  instruction-only by design. The controller is sole writer during coordinated
-  runs; workers return proposed updates. Standalone use requires one writer and
-  serialized writes; no shared lock protocol or bundled file lock is currently
-  defined.
+  instruction-only by design and now requires a short-lived lock scoped to the
+  issue file being changed. It is released after the confirmed write; a crash
+  must not leave it locked indefinitely. It does not lock the project or
+  controller session, and the skill does not provide a lock implementation.
 - [Cross-skill references](../skills/mstack-tracker/SKILL.md) resolve relative
   to the skill directory. Releases contain all three version-matched skill
   directories as siblings; if a required sibling is missing, stop the dependent
@@ -132,20 +129,11 @@ marker and the decision needed before changing or removing it.
   excludes automatic legacy-label migration, offline cache/export tooling and
   GitHub Projects fields. Existing record migration requires an explicit
   decision; an export does not replace a current read.
-- [cmux](../skills/mstack-orchestrator/references/cmux.md) conditionally
-  supports either its macOS CLI or TUI, selected explicitly and checked against
-  the installed interface and harness. Default to `drain`; hard halt requires
-  a verified stop and confirmation path.
+- The fx CLI mapping follows the published `fx ask` contract for its flags,
+  structured output and exit handling. Runtime-level evaluation is follow-up
+  work; native fx subagents are unsupported.
 
 ## Open items
-
-### Product decision to confirm
-
-- **Filesystem write coordination:** The current instruction-only contract
-  assigns serialization to the caller and stops when a single writer cannot be
-  ensured. My recommendation is to keep that boundary rather than prescribe a
-  shared lock protocol, because the tracker supplies no executable filesystem
-  operations. Confirm whether caller-owned serialization is sufficient.
 
 ### Validation items
 
@@ -156,39 +144,23 @@ marker and the decision needed before changing or removing it.
    followed by worker reconciliation and a durable checkpoint; then a fresh
    invocation from current records. This does not assume cleanup after an
    abrupt hard limit. A reported next step alone does not pass.
-2. [Configuration](../skills/mstack-orchestrator/references/configuration.md) —
-   validate that the external launcher/scheduler prevents concurrent
-   controllers, refuses takeover while a prior controller may still be active,
-   and permits recovery-only takeover after it ends while workers remain active
-   or uncertain.
-3. [Cursor Cloud mapping](../skills/mstack-orchestrator/references/cursor-cloud.md) —
-   validate conditional unattended use in a live runtime trial: default drain,
-   configured cancellation and terminal observation before checkpointing,
-   ambiguous follow-up reconciliation, recovery-only observation/cancellation,
-   and fresh-agent dispatch after a controller-session boundary. The API is
-   public beta and documents no cancellation-latency guarantee.
-4. [Cursor subagent mapping](../skills/mstack-orchestrator/references/cursor-subagents.md) —
-   validate conditional unattended behavior on the selected Cursor surface:
-   completion observation, `drain` behavior, cancellation and stop confirmation
-   when exposed, refusal of unsupported hard halt, and checkpoint handling
-   when task state is uncertain. The separate Cursor SDK does not establish
-   native Task tool capabilities.
-5. [cmux mapping](../skills/mstack-orchestrator/references/cmux.md) —
-   live-validate the selected installed interface/harness pairing for launch
-   readiness, observation, stopping and process cleanup. The macOS CLI and TUI
-   remain separate mappings.
-6. [Herdr mapping](../skills/mstack-orchestrator/references/herdr.md) —
-   live-validate worker observation and cleanup on the selected harness. A
-   `ctrl+c` request alone does not prove termination; hard halt requires a
-   verified process-tree stop and confirmation. Confirm `drain` remains usable
-   when that capability is absent.
-7. [Tracker skill](../skills/mstack-tracker/SKILL.md) — validate the documented
-   sibling layout when packaging/installation is implemented; no installer has
-   yet been validated.
-8. [Filesystem tracker](../skills/mstack-tracker/references/filesystem.md) —
-   live-validate overlapping write requests: controller-only authoritative
-   writes, worker proposals reconciled against current records, and refusal
-   without a competing issue write when single-writer control is unavailable.
+2. [Controller admission](../skills/mstack-orchestrator/references/configuration.md) —
+   retain one-controller-per-project and recovery-only behavior. Runtime
+   enforcement remains an external launcher/scheduler responsibility; the
+   contract does not promise that Herdr supplies project-level admission.
+3. [Filesystem tracker](../skills/mstack-tracker/references/filesystem.md) —
+   validate the selected lock provider's file-scoped lock, release after a
+   confirmed write, and recovery after owner crash. Exercise overlapping
+   updates and worker proposals against current records, confirming that the
+   latest record is reconciled and no competing write is lost. If real logs
+   show the short-lived lock is insufficient, tighten the rule based on that
+   evidence.
+
+Cursor Cloud, Cursor native subagents and cmux are excluded from 0.1.0 rather
+than pending release validation. The package has no installer requirement.
+Herdr's documented operation mapping is accepted for v1 without a live trial;
+autonomous-session and filesystem-lock reliability belong in the follow-up
+evaluation story.
 
 ## Current status
 

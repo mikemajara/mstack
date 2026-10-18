@@ -31,18 +31,17 @@ known limitations.
   dispatch pending reconciliation. A fresh controller may take over in
   recovery-only mode. Deadlines and halts stop dispatch while the controller
   reconciles and checkpoints; this does not change workflow phase rules.
-  Cursor Cloud's follow-up run carries earlier conversation/workspace context;
-  workflow's current specification and project records remain authoritative.
-  Cursor native subagents also start fresh across controller sessions; their
-  retained task context does not replace the current workflow assignment.
-  Their default unattended stop behavior is `drain`; cancellation limits do
-  not change workflow phase gates. cmux stop limitations affect orchestration
-  controls only; phase readiness and transitions remain unchanged.
+  Herdr is the supported runtime for 0.1.0, and fx `ask` is a documented
+  harness mapping used through a supported runtime. Cursor Cloud and native
+  Cursor subagents are deferred; cmux is excluded. These runtime-scope choices
+  do not change workflow phase gates.
 - **Tracker:** Records specifications, workflow facts, evidence and links;
   supports filesystem issues by default and optional GitHub integration. For
   filesystem tracking, the controller writes records during a coordinated run;
-  workers return proposed changes. GitHub integration excludes automatic legacy
-  migration and offline caches; neither changes workflow gates.
+  workers return proposed changes. Standalone mutations use a short-lived lock
+  scoped to the changed issue file; no lock implementation is bundled. GitHub
+  integration excludes automatic legacy migration and offline caches; neither
+  changes workflow gates.
 - **Release layout:** The shared-version release contains all three named skill
   directories as siblings. Cross-skill links resolve relative to their owning
   skill; a missing required sibling makes the dependent operation unavailable.
@@ -57,6 +56,8 @@ known limitations.
   a missing link does not change the phase rules.
 - Controller-only filesystem writes do not change phase ownership or validation;
   workflow results still require the same gates before the controller records them.
+- Filesystem per-file write locks serialize record mutations but do not change
+  workflow gates or require workflow adaptation.
 - GitHub legacy label migrations remain explicit user decisions, and cached or
   exported records do not establish current workflow state.
 - Tracker must record workflow facts and evidence without treating tool status
@@ -69,12 +70,10 @@ known limitations.
   phase handoffs and holds, then reconcile and checkpoint before a controlled
   runtime stop; this does not change workflow phase criteria. No recovery after
   an abrupt hard limit is promised.
-- Cursor Cloud may run unattended with `drain` by default; confirmed hard-halt
-  handling remains an orchestrator runtime concern and does not change workflow
-  phase criteria.
-- Cursor native subagents follow the same drain default, with hard halt gated on
-  selected-surface cancellation and confirmation. Workflow phase criteria do
-  not change.
+- Cursor Cloud and native Cursor subagents are unsupported in 0.1.0; cmux is
+  excluded. No workflow adaptation is required for these deferred integrations.
+- fx CLI output and Herdr observations remain execution evidence, not proof a
+  workflow gate passed. Workflow's existing phase criteria apply unchanged.
 - Orchestrator's elapsed-time limit is per session; workflow has no cumulative
   scheduled-session time gate.
 - No universal rolling usage threshold is defined. Any guard is
@@ -89,15 +88,6 @@ known limitations.
   or completion criteria.
 - Herdr model launch flags affect orchestrator dispatch only; workflow's
   assignment and phase requirements remain unchanged.
-- Cursor Cloud continuation must receive the current workflow assignment and
-  use current project records; its retained conversation does not replace the
-  specification or phase gates.
-- Cursor subagent resume is restricted to the same assignment within the current
-  controller session. A later task receives the current workflow assignment;
-  phase criteria do not change. Native cancellation is required only when a
-  deadline is configured to halt rather than drain.
-- cmux's selected interface and harness must be validated before dispatch;
-  cancellation support does not change workflow phase criteria.
 - Orchestrator must give workers the current refinement specification, including
   relevant constraints. No separate orchestration rule or tracker schema is
   required by this addition.

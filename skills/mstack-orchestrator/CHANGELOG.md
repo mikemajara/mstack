@@ -47,30 +47,24 @@ known limitations.
   process-tree termination; hard cancellation requires harness-specific proof,
   and project exclusivity must come from the launcher/scheduler. Herdr model
   flags are documented for Codex and Cursor; other harnesses still need mapping.
-  Cursor Cloud v1 is public beta and is conditionally usable unattended with
-  `drain` by default; hard halt requires confirmed cancellation and terminal
-  observation before checkpointing. Reconcile ambiguous follow-up requests
-  from agent/run records before retry; its follow-up endpoint has no
-  caller-supplied run ID, and cancellation has no documented latency guarantee.
-  Cursor native subagents resume only for the same assignment within one
-  controller session; a later session starts a fresh task from project records.
-  The exposed task schema must be inspected. Unattended use follows `drain`;
-  deadline `halt` requires cancellation and stop confirmation from the selected
-  native task surface. The separate SDK does not establish that capability, and
-  live validation remains pending. cmux keeps
-  separate macOS and TUI mappings; select and validate the installed
-  interface/harness pairing. Default to `drain`; hard halt requires verified
-  stop and confirmation.
+  Cursor Cloud and native Cursor subagents are deferred and unsupported in
+  0.1.0; their references preserve research for a later release. cmux is not
+  included. The fx CLI mapping covers `fx ask` as a harness, used through a
+  supported runtime, and follows its published command/output contract. Herdr
+  is the supported runtime based on its documented CLI; its project admission
+  still comes from an external launcher/scheduler, and `ctrl+c` does not prove
+  process-tree termination.
   When worker state is uncertain, retain ownership, record a reconciliation
   condition and do not dispatch a replacement. Runtime-specific detection and
   recovery-only admission remain open.
 - **Tracker:** Records specifications, workflow facts, evidence and links;
   supports filesystem issues by default and optional GitHub integration. The
   filesystem adapter is instruction-only: the controller writes records in a
-  coordinated run, workers return proposed updates, and standalone use requires
-  one serialized writer; no CLI or lock is supplied. GitHub integration does
-  not migrate legacy labels or provide offline cache/export or Projects-field
-  mappings; current reads remain authoritative.
+  coordinated run, workers return proposed updates, and mutations use a
+  short-lived lock scoped to the issue file. The environment supplies locking;
+  no lock implementation is bundled. GitHub integration does not migrate
+  legacy labels or provide offline cache/export or Projects-field mappings;
+  current reads remain authoritative.
 - **Release layout:** The shared-version release contains all three named skill
   directories as siblings. Cross-skill links resolve relative to their owning
   skill; a missing required sibling makes the dependent operation unavailable.
@@ -82,8 +76,9 @@ known limitations.
 - Orchestrator requires the same-release workflow and tracker siblings for its
   linked contracts; it must stop a dependent operation if either is missing.
 - With filesystem tracking, the controller is the sole record writer during a
-  coordinated run. Workers return proposed updates; if exclusive controller or
-  single-writer operation cannot be ensured, stop tracker mutations.
+  coordinated run. Workers return proposed updates. Standalone writes use a
+  short-lived lock for the changed issue file. If the environment cannot
+  serialize a mutation, stop it.
 - GitHub issue attributes use the current label mapping. Do not infer or
   automatically migrate legacy labels; read current remote records rather than
   relying on offline exports.
@@ -98,13 +93,10 @@ known limitations.
   a fresh recovery-only controller after the previous controller ends while
   workers remain active or uncertain, but must hold dispatch and claim changes
   pending reconciliation. Story claims remain the tracker's responsibility.
-- Cursor Cloud continuation carries forward the agent's conversation and
-  workspace. A new controller makes its decision from project records and uses
-  a fresh agent after reconciling the prior one; it does not continue the old
-  agent conversation across controller sessions.
-- Cursor native subagent resume is likewise limited to the same assignment in
-  the current controller session; cross-session work starts a fresh task from
-  project records. Runtime-specific task cancellation remains unverified.
+- Cursor Cloud and native Cursor subagents are unsupported in this release;
+  no workflow behavior depends on them. No workflow adaptation is needed.
+- fx CLI output remains execution evidence only; workflow gates still validate
+  the assigned result. No workflow adaptation is needed.
 - Refinement specifications include relevant constraints that affect the work.
   Pass the current specification and verification scenarios to each worker.
 - Start independent QA only when the implementation checks pass and their

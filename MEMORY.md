@@ -5,7 +5,7 @@ Current continuity for developing mstack. Repository rules live in
 product behavior in the [draft skills](skills/). Keep only context that helps
 the next development decision.
 
-## Current review — 2026-10-18
+## Current review — 2026-10-19
 
 - Versioning decisions are recorded in [AGENTS.md](AGENTS.md#versioning-and-release-notes):
   one shared mStack version across the three skills, starting at `0.1.0`, with
@@ -13,8 +13,8 @@ the next development decision.
   skill. Every release entry summarizes all skill changes and states their
   impact/adaptation requirement for that skill, including explicit no-change
   entries. The authoring session has added the initial version fields and
-  `0.1.0` baseline changelogs; no published release process or installer has
-  been validated.
+  `0.1.0` baseline changelogs; no public release has been made. mStack does not
+  ship an installer for Herdr, fx or other external runtime products.
 - The user settled the autonomous-session boundary: each controller session
   should close with a durable checkpoint, and a later session should start fresh
   from GitHub or local project records. Do not rely on open runtime panes or
@@ -26,9 +26,8 @@ the next development decision.
   controller may take exclusive controller admission in recovery-only mode to
   inspect and reconcile, without dispatching or changing claims. Runtime-specific
   detection and confirmation, cleanup details and runtime limit monitoring
-  remain open. The temporary
-  [draft review queue](docs/DRAFT-REVIEW.md) records the settled behavior and
-  remaining runtime and packaging validation items.
+  remain open. The temporary [review queue](docs/DRAFT-REVIEW.md) records
+  settled behavior and remaining runtime/filesystem validation items.
 - Autonomous jobs in the old backlog have been observed stopping after reporting
   a next step despite its continuation instructions. The user requires explicit
   continuation in mstack and expects iterations with runtime trials; stronger
@@ -62,10 +61,13 @@ the next development decision.
   no issue tracker is selected. Workflow states the fallback; tracker owns
   selection and operations, with the optional selector cross-referenced from
   project configuration. This is a contract/template pass, with no local CLI,
-  installation or activation. For coordinated runs, the controller is the
-  sole writer and workers return proposed updates. Standalone writes require
-  one writer and serialization; no CLI or file lock is supplied. Concurrent
-  worktree writes remain unsupported and this path has not had a live trial.
+  installation or activation. Filesystem mutations use an environment-provided
+  short-lived lock scoped to the issue file being changed; workers return
+  proposed updates for reconciliation by the controller. The lock releases
+  after the confirmed write and must not remain stuck after a crash. There is
+  no project/session-wide tracker lock; live concurrent-writer and crash
+  recovery validation remains open, and any stricter policy should follow
+  evidence from actual conflicts.
 - Legacy plans, setup/status, dedupe, queue and snapshot behavior were reviewed
   for that pass. Specification sections and local inspection were adapted;
   draft promotion states, snapshots, readiness heuristics and unrelated
@@ -118,44 +120,30 @@ the next development decision.
   fallbacks and run controls in one `.mstack/config.json`; the earlier separate
   model-file proposal was rejected as unnecessary. These are instructions and
   configuration semantics, not an executable controller or configuration loader.
-- The user's runtime examples are Herdr, Cursor Cloud and cmux; agent harness
-  examples are `agent-cursor`, `codex` and `fx`. Cursor also needs native
-  subagent operation mappings. They use Cursor for Grok/Composer and Codex
-  subscription access for OpenAI models; do not assume interchangeable account
-  routes. Model IDs are deliberately project choices. Additional harness
-  mappings remain pending.
+- mStack 0.1.0 supports Herdr as the runtime and documents Codex, Cursor CLI
+  and fx CLI harness mappings. Cursor Cloud and native Cursor subagents are
+  deferred and unsupported; cmux is removed from the release scope. Do not
+  assume interchangeable account routes. Model IDs are project choices.
 - [Herdr](skills/mstack-orchestrator/references/herdr.md) has an initial operation
-  mapping checked against official documentation. Codex and Cursor model flags
-  are documented; other harnesses remain unsupported until verified. The
-  integration requires external project exclusivity and does not promise hard
-  halt without process-tree confirmation. No runtime was launched or configured.
+  mapping checked against official documentation. The current official docs
+  support the documented CLI launch, prompt and wait operations. Herdr does not
+  provide project-level controller admission, and `ctrl+c` does not prove
+  process-tree termination. The integration remains conditional on external
+  exclusivity and defaults to `drain`; no live runtime trial was performed.
+- The [fx CLI mapping](skills/mstack-orchestrator/references/fx.md) now covers
+  `fx ask` as a harness only, requiring an execution runtime that can launch and
+  observe it. Its command flags and structured result/exit handling were
+  checked against the official fx documentation. Native fx subagents are
+  deferred. No live runtime or cancellation trial has been performed.
 - The suggested 90% of a five-hour window is not a universal policy. The
   working v1 rule permits optional runtime-specific guards only when the adapter
   defines signal, units, window, polling cadence, threshold and stop effect.
   Unsupported requested guards block dispatch; live runtime validation remains
   future work.
-- [Cursor Cloud](skills/mstack-orchestrator/references/cursor-cloud.md),
-  [native subagents](skills/mstack-orchestrator/references/cursor-subagents.md) and
-  [cmux](skills/mstack-orchestrator/references/cmux.md) now have documentation mappings.
-  cmux keeps separate macOS and TUI sections because their CLI grammars differ;
-  select one interface and validate the installed harness pairing before use.
-  Default to drain; hard halt needs verified process stop and confirmation.
-  Cursor Cloud's
-  follow-up request has no documented model override, so the mapping uses a
-  new agent on the intended branch/PR when changing models. Cloud agent creation
-  supports duplicate detection with a client-supplied agent ID; follow-up runs
-  have no client-supplied run ID, so ambiguous requests must be reconciled
-  through API records before retry. A later controller does not continue the
-  old agent's conversation: it reconciles the outcome and starts fresh work from
-  current project records. Cloud Agents API v1 is public beta, with no documented
-  cancellation-latency guarantee. The mapping is conditionally usable unattended:
-  default to drain, and use hard halt only when cancellation and terminal-state
-  observation can be confirmed before checkpointing. No live runtime validation
-  has been performed. Runtime-specific target settings and native delegation
-  selection are described in the shared configuration reference. Native Cursor
-  delegation follows the same drain default; deadline halt depends on
-  cancellation in the selected task surface and cannot be inferred from the
-  separate SDK.
+- Cursor Cloud and native Cursor subagent references are retained for possible
+  later work, but neither is selectable in mStack 0.1.0. cmux support was
+  removed because there is no near-term plan to implement it. A low-priority,
+  not-ready backlog story can be created if cmux is prioritized later.
 - Legacy remains frozen historical source material; removal is a separate
   change, so its repository guidance and source pointers remain. The cleanup
   deliberately does not port scaling by story type, legacy hardening prompts,
@@ -169,18 +157,27 @@ the next development decision.
 - Runtime-specific enforcement of the shared controller-admission protocol
   (exclusive admission, recovery-only takeover after the prior controller ends,
   and release after checkpointing); live validation of runtime-specific usage
-  guards; and control-signal transport. No shared lock API is required.
+  guards; and control-signal transport. Filesystem tracker uses a separate
+  short-lived per-file lock for writes; it does not replace controller
+  admission.
   `maxDurationMinutes` is per session and does not accumulate across scheduled
   sessions.
-- Validate external project admission and recovery-only takeover with Herdr,
-  Cursor Cloud and cmux; readiness/cancellation limitations and native subagent
-  cancellation also need runtime checks.
 - Cross-cutting data-migration requirements.
-- No installer or package has yet validated the release layout. Future
-  packaging must preserve the three same-version sibling directories and their
-  relative references as described in `README.md`.
+- **Reliability evaluation story:** Create a follow-up story for supervised
+  Herdr runs that evaluates autonomous continuation, worker reconciliation,
+  session checkpoints and fresh-session decisions. Retain logs/evidence and
+  decide the reliability pass criteria in that story; no live trial has run.
+- **Project setup and feedback intake:** Decide whether first use should check
+  for `.mstack/` and ask before creating it, use a separate setup skill/repo,
+  or another entry point. Separately consider a thin feedback skill that can
+  file bug reports and feature requests at
+  https://github.com/mikemajara/mstack. These are options, not decided behavior.
+- There is no installer in this package. Distribution still needs to preserve
+  the three same-version sibling skill directories and relative paths. Links to
+  vendor installation instructions may be considered as documentation, not as
+  an mStack installer.
 
-Tracker and orchestrator integration procedures are drafted with marked limitations; runtime
-integration, packaging and a supervised real-project trial remain future work.
-Local helper validation does not establish that the integrations have been
-exercised against live repositories or runtimes.
+Tracker and orchestrator procedures include documented limits. Autonomous
+session reliability, filesystem lock behavior, and project setup/feedback intake
+remain follow-up work; local document checks do not establish live runtime
+behavior.

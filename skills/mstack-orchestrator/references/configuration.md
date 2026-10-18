@@ -11,8 +11,8 @@ This reference defines configuration semantics for the actor; it does not
 specify an executable loader. Runtime/harness mappings supply concrete launch
 and control operations.
 
-Draft: the shared admission contract is defined in the orchestrator skill, but
-no runtime mapping here demonstrates its enforcement. Before unattended use,
+Validation pending: the shared admission contract is defined in the orchestrator
+skill, but no runtime mapping here demonstrates its enforcement. Before unattended use,
 validate that the launcher/scheduler denies concurrent controller admission,
 allows recovery-only admission only after the prior controller has ended, and
 retains admission through reconciliation and checkpointing. mStack specifies
@@ -97,16 +97,14 @@ actual executable/API operations. Naming a harness does not install it or
 provide an operation mapping. Account access follows the harness's configured
 authentication; a model ID does not transfer subscription access between clients.
 
-`execution.delegation` defaults to `agent`. Set it to `subagent` only for a
-Cursor session with native delegation support; use the
-[subagent mapping](cursor-subagents.md) within that session's actual runtime.
-It does not make a native task a separate hosted agent or change its account.
+For mStack 0.1.0, `execution.delegation` must be `agent`. Native Cursor
+subagents are deferred and unsupported. The fx mapping covers the `fx ask` CLI
+only; fx subagents are also unsupported.
 
-`execution.runtimeOptions` holds target settings owned by the runtime reference:
-[Herdr](herdr.md) may use `session` or `machine`, [Cursor Cloud](cursor-cloud.md)
-uses its `repos` or `env` target, and [cmux](cmux.md) uses `interface` plus a
-`socket` or TUI `session`. Resolve these before dispatch; do not pass arbitrary
-keys as CLI flags or mix one runtime's target settings into another's operation.
+`execution.runtimeOptions` holds target settings owned by the runtime reference.
+In mStack 0.1.0, supported runtime targets are Herdr's `session` or `machine`
+options. Resolve these before dispatch; do not pass arbitrary keys as CLI flags
+or mix one runtime's target settings into another's operation.
 When an override changes runtime, replace its `runtimeOptions` with settings
 for that runtime, or an empty object if none are supplied. Inherit and merge
 runtime options by key only while the runtime remains the same.

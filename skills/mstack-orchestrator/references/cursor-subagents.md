@@ -1,18 +1,21 @@
-# Cursor native subagent integration
+# Deferred: Cursor native subagents
 
-Use when `execution.delegation` is `subagent` and the selected
-`agent-cursor` session exposes native delegation. The parent session still
-belongs to its actual runtime. Follow the shared
+Native Cursor subagents are not supported in mStack 0.1.0. This reference
+preserves the researched operation mapping for later work. Do not set
+`execution.delegation` to `subagent` in this release; the mapping has not had a
+live runtime trial.
+
+If reconsidered in a later release, use when `execution.delegation` is
+`subagent` and the selected `agent-cursor` session exposes native delegation.
+The parent session still belongs to its actual runtime. Follow the shared
 [execution contract](../SKILL.md#execution-integration-contract) and
 [configuration](configuration.md); phase requirements remain in workflow.
 
-Inspect the exposed tool schema before use because signatures vary by Cursor
-surface. Draft: no live runtime trial has validated this mapping on the selected
-Cursor task surface. Unattended use is conditional: `drain` is the default;
-configure `onDeadline: halt` only if the exposed native task operation supports
-cancellation and the integration can confirm the task stopped. If it cannot,
-hard halt is unsupported. Do not infer native task support from the separate
-Cursor SDK.
+If this mapping is reconsidered for a later release, inspect the exposed tool
+schema because signatures vary by Cursor surface. Use `drain` by default and
+configure `onDeadline: halt` only if the native task operation supports
+cancellation and the integration can confirm the task stopped. Do not infer
+native task support from the separate Cursor SDK.
 
 ## Availability and model selection
 

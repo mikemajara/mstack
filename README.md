@@ -47,9 +47,11 @@ instructions. [STRUCTURE.md](docs/STRUCTURE.md) maps ownership and files;
 
 Start reviewing the workflow with its [lifecycle](skills/mstack-workflow/references/lifecycle.md)
 and [phase references](skills/mstack-workflow/references/phases/). Incomplete contracts
-are marked in place. The shared starting version is `0.1.0`. Review of
-remaining contract gaps, packaging checks and a supervised story walkthrough
-remain before release; these drafts are not ready for installation.
+are marked in place. The shared starting version is `0.1.0`. Herdr is the
+documented runtime for this release. Cursor Cloud and native Cursor subagents
+are deferred; cmux is excluded. mStack does not install those runtime products.
+Autonomous continuation and filesystem write coordination still need a
+supervised reliability evaluation before their behavior is treated as proven.
 
 `legacy/backlog/` is frozen historical source material from
 [mikemajara/skills](https://github.com/mikemajara/skills/tree/2ba433139fc2e102ad2f231de2c2d79f6ea12a06/skills/backlog),

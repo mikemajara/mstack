@@ -5,6 +5,11 @@ the parent [orchestrator contract](../SKILL.md) and shared
 [configuration policy](configuration.md). Workflow owns phase requirements;
 tracker owns story/PR operations.
 
+Herdr is the supported mStack 0.1.0 runtime based on its published CLI and
+agent-automation documentation. This mapping has not had a live mStack trial.
+Use `drain` by default; hard halt remains unsupported unless the selected
+harness can confirm process-tree termination.
+
 ## Availability and capabilities
 
 Resolve the Herdr server/session and project checkout before dispatch. A server

@@ -9,17 +9,19 @@ or when filesystem tracking is explicitly selected. Follow the parent
 provides issue storage, relationships and recorded workflow facts. PRs, QA
 records and merge confirmation require a separate integration.
 
-Draft: the instruction-only single-writer procedure has not been validated in
-a live concurrent run. Validation must exercise overlapping write requests and
-confirm that only the controller writes in the authoritative checkout, worker
-proposals are serialized against current records, and a caller that cannot
-ensure one writer stops without creating or overwriting a competing record.
-This instruction-only integration currently defines no shared lock protocol,
-bundled CLI or file lock.
-Standalone tracker use requires the caller to ensure one writer and serialize
-writes. Independent number allocation and concurrent issue writes across
-worktrees are unsupported. Project-level controller admission remains the
-orchestrator launcher's responsibility.
+Validation pending: this integration requires a short-lived lock for a file
+mutation when writers could overlap, but no concrete lock provider or live
+concurrent-writer trial has validated the behavior. Do not assume filesystem
+issue files provide locking or safe concurrent writes.
+
+Use an environment-provided lock scoped to the issue file being changed. Hold
+it only while reading the current file, checking and applying the change, and
+confirming the result; then release it. The lock must recover automatically if
+its owner crashes, so it cannot leave the file locked indefinitely. Do not
+lock the whole project or controller session for filesystem writes. Do not
+approximate a lock with issue labels, assignees, or a non-atomic file check.
+Independent issue-number allocation and concurrent writes across worktrees
+remain unsupported.
 
 ## Project and record identity
 
@@ -179,10 +181,13 @@ them into a cache.
 
 ## Claim and release
 
-Serialize admission in the authoritative checkout. Read current records and
-worker ownership before claiming. Record the run/actor in a dated note and
-`assignees`, change `status:open` to `status:doing`, and re-read to confirm
-before dispatch. No concurrent writer may claim the same story.
+For each mutation, acquire the lock for that issue file before reading it and
+hold it through the confirmed write and read-back. If a lock is unavailable,
+do not write concurrently; report the conflict or unavailable capability.
+Re-read and reconcile the current record before applying a proposed update.
+Record the run/actor in a dated note and `assignees`, change `status:open` to
+`status:doing`, and re-read to confirm before dispatch. No concurrent writer
+may claim the same story.
 
 Release only after confirming the worker stopped and reconciling its outputs.
 Record the release, remove this run's assignment and restore `status:open` for

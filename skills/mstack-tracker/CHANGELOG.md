@@ -27,18 +27,16 @@ known limitations.
 - **Orchestrator:** Coordinates existing stories through workflow phases,
   continues eligible work during an active autonomous session, and closes each
   session with project state recorded for a later fresh decision. Uncertain
-  worker state retains its story ownership until reconciliation. Cursor Cloud
-  exposes durable agent/run IDs; an unclear follow-up request must be
-  reconciled against those records before retry. Cursor subagent resume is
-  limited to the same assignment in one controller session; later work uses a
-  fresh task. Unattended use drains by default; verified cancellation is needed
-  only for a configured hard halt. cmux interface and harness validation is
-  runtime-owned and adds no tracker field.
+  worker state retains its story ownership until reconciliation. Herdr is the
+  supported runtime for 0.1.0; fx `ask` is a documented harness mapping through
+  a supported runtime. Cursor Cloud and native Cursor subagents are deferred;
+  cmux is excluded. These scope decisions add no tracker fields or operations.
 - **Tracker:** Records specifications, workflow facts, evidence and links;
   supports filesystem issues by default and optional GitHub integration. The
-  filesystem adapter is instruction-only, with one serialized writer and no
-  bundled CLI or file lock. GitHub support excludes automatic legacy-label
-  migration, offline cache/export tooling and GitHub Projects fields.
+  filesystem adapter is instruction-only and requires a short-lived lock scoped
+  to each changed issue file; no lock implementation is bundled. GitHub support
+  excludes automatic legacy-label migration, offline cache/export tooling and
+  GitHub Projects fields.
 - **Release layout:** The shared-version release contains all three named skill
   directories as siblings. Cross-skill links resolve relative to their owning
   skill; a missing required sibling makes the dependent operation unavailable.
@@ -55,8 +53,9 @@ known limitations.
   label or tracker migration requires an explicit decision; exports are
   time/coverage-labeled context, not a cache that can replace remote reads.
 - For filesystem tracking during coordinated runs, the controller is the sole
-  writer and workers return proposed updates. Standalone callers serialize
-  writes themselves; no CLI or lock is provided.
+  writer and workers return proposed updates. A standalone mutation uses a
+  short-lived lock scoped to the changed issue file. No CLI or lock
+  implementation is provided.
 - Refinement specifications may include compatibility, performance, security
   or behavior-preservation constraints when relevant. Store this content with
   the specification; no dedicated tracker field is required by this change.
@@ -78,12 +77,9 @@ known limitations.
   recorded before a controlled stop and later read from current project records;
   tracker remains the record layer and does not infer project state or recover
   from an abrupt hard limit.
-- Cursor Cloud remains conditionally usable unattended with drain by default;
-  cancellation must be observed before checkpointing when hard halt is chosen.
-  No tracker behavior or record shape changes.
-- Cursor native subagents also drain by default; tracker keeps worker identity
-  for reconciliation, while hard-halt capability is selected-surface-specific.
-  No tracker fields or operations change.
+- Cursor Cloud and native Cursor subagents are unsupported in 0.1.0; cmux is
+  excluded. These omissions require no tracker adaptation and add no fields or
+  operations.
 - Session checkpoints use existing story/PR records and project memory where
   needed for run-wide context; no separate tracker record type is required.
 - Elapsed-time limits apply per controller session; tracker does not maintain
@@ -99,13 +95,6 @@ known limitations.
   uncertain workers retain ownership until reconciled.
 - Herdr's Codex/Cursor model flags do not change tracker operations; additional
   harness mappings remain runtime concerns.
-- Preserve Cursor Cloud agent/run identity and reconcile ambiguous follow-up
-  creation before retry. This uses existing execution-identity and story records;
-  it adds no tracker field.
-- Preserve native subagent identity for same-session observation/resume. Across
-  controller sessions, retain the existing story claim until reconciliation
-  and record the new task identity when fresh work is dispatched. A deadline
-  drain does not release the claim while the task remains active.
-- cmux's selected interface/harness and cancellation capabilities are runtime
-  facts; tracker preserves the worker claim until its outcome is reconciled.
+- Herdr and fx worker identities use existing execution and story records;
+  no tracker field or behavior change is needed.
 - Use all three skills at `0.1.0` when supporting a complete mStack run.

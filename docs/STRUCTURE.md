@@ -54,7 +54,7 @@ skills/
       herdr.md            # Herdr operation mapping and capability limitations
       cursor-cloud.md     # Cursor Cloud API agent/run mapping
       cursor-subagents.md # Native Cursor session delegation
-      cmux.md             # macOS/TUI command mappings and capability limitations
+      fx.md               # fx ask CLI harness mapping; native subagents deferred
   mstack-tracker/
     SKILL.md             # Shared mStack version in frontmatter
     CHANGELOG.md         # Stack-wide release changes and tracker impact
@@ -88,8 +88,9 @@ operations and constraints. The current request and project instructions define
 role scope; workflow supplies validation standards for every actor.
 Tracker defines missing-access and partial-operation handling; orchestrator
 defines capability checks and execution controls. The shared release and
-installed sibling layout are defined in `AGENTS.md` and `README.md`; actual
-packaging validation and complete runtime/harness mappings remain pending.
+installed sibling layout are defined in `AGENTS.md` and `README.md`; runtime
+pairing and autonomous-session reliability still need evaluation. Herdr is the
+v1 runtime; Cursor Cloud/native subagents are deferred and cmux is excluded.
 
 Current review context and unresolved design questions live in
 [MEMORY.md](../MEMORY.md).
