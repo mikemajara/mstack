@@ -4,7 +4,7 @@ A harness-neutral delivery stack for small software projects, currently being
 developed as three draft skills:
 
 - [workflow](skills/workflow/SKILL.md): phase contracts, verification and project memory.
-- [orchestrator](skills/orchestrator/SKILL.md): execution and permissions; optional Herdr integration.
+- [orchestrator](skills/orchestrator/SKILL.md): execution, project configuration and permissions; optional runtime integrations.
 - [tracker](skills/tracker/SKILL.md): specifications, workflow facts and evidence; optional GitHub integration.
 
 To work on this repository, follow [AGENTS.md](AGENTS.md). The skill files are

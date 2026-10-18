@@ -44,7 +44,11 @@ skills/
   orchestrator/
     SKILL.md
     references/
-      herdr.md            # Execution integration placeholder
+      configuration.md    # .mstack/config.json, model selection and run controls
+      herdr.md            # Herdr operation mapping and capability limitations
+      cursor-cloud.md     # Cursor Cloud API agent/run mapping
+      cursor-subagents.md # Native Cursor session delegation
+      cmux.md             # macOS/TUI command mappings and capability limitations
   tracker/
     SKILL.md
     references/
@@ -60,8 +64,9 @@ target-project behavior; root `MEMORY.md` records development of mstack itself.
 
 ## Optional integrations
 
-Herdr belongs to orchestrator; GitHub belongs to tracker. An integration is a
-bounded set of instructions for using a concrete system. It need not be a
+Runtime and delegation integrations belong to orchestrator; GitHub belongs to
+tracker. An integration is a bounded set of instructions for using a concrete
+system. It need not be a
 deterministic program. A skill may have or use no integration where its
 capabilities allow.
 
@@ -69,8 +74,9 @@ The owning skill defines the general integration contract and handles
 availability/failure policy. Concrete references describe that system's actual
 operations and constraints. Runtime/project policy determines execution and
 decision authority; workflow supplies validation standards for every actor.
-Tracker defines missing-access and partial-operation handling; installed
-cross-skill resolution and orchestrator integration availability remain pending.
+Tracker defines missing-access and partial-operation handling; orchestrator
+defines capability checks and execution controls. Installed cross-skill
+resolution and complete runtime/harness mappings remain pending.
 
 Current review context and unresolved design questions live in
 [MEMORY.md](../MEMORY.md).
