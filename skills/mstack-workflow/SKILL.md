@@ -1,5 +1,6 @@
 ---
 name: mstack-workflow
+version: 0.1.0
 description: Define and follow story phases, readiness gates, verification requirements and project memory. Use when researching, refining, implementing or validating stories, or shaping a new story.
 ---
 
@@ -10,7 +11,11 @@ coordinates stories through those phases. Tracker performs record operations.
 These skills guide behavior; access is controlled by the environment the actor
 runs in.
 
-Draft: phase contracts are incomplete.
+Cross-skill links are relative to this skill directory. A full mStack release
+installs all three version-matched skill directories as siblings, preserving
+their names and layout. Workflow rules may be used independently; if an
+operation depends on a linked sibling that is missing, stop that operation and
+report the incomplete installation rather than substituting another version.
 
 Own phase definitions, prerequisites, required outputs, exit validation and valid
 transitions. Apply the same standards to every actor. Use workflow directly
@@ -31,8 +36,8 @@ file under [phases](references/phases/). Use [work-item attributes](references/a
 [type][attribute:type], [priority][attribute:priority], [phase][attribute:phase] and
 [status][attribute:status] definitions. `label` names an attribute or value; `children`
 lists its values. Concrete tracker mappings belong to tracker. Attribute values do not
-establish readiness or completion; phase contracts still apply, including their draft
-limitations.
+establish readiness or completion; phase contracts still apply, including
+limitations explicitly marked in their references.
 
 ## Project layout and issue tracking
 
@@ -62,7 +67,8 @@ Read the reference for the phase being performed:
 | [QA][phase:qa] — Judge the specified behavior | [Contract](references/phases/qa.md) |
 | Define scenarios or judge evidence | [Verification](references/verification.md) |
 
-[Implementation][phase:implementation] complete means ready for [QA][phase:qa].
+[Implementation][phase:implementation] is ready for [QA][phase:qa] only after
+all implementation exit conditions pass and an independent QA actor is assigned.
 [QA][phase:qa] passing requires an independent actor and evidence recorded on
 the PR. Delivery completion requires merge followed by confirmed story closure under
 [story completion](references/lifecycle.md#story-completion). A tracker field

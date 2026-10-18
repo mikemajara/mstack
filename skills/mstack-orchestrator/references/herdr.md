@@ -5,10 +5,6 @@ the parent [orchestrator contract](../SKILL.md) and shared
 [configuration policy](configuration.md). Workflow owns phase requirements;
 tracker owns story/PR operations.
 
-Draft: harness-specific launch arguments and confirmed process-tree
-cancellation are not fully mapped. Do not promise hard deadline cancellation
-without a verified harness mapping.
-
 ## Availability and capabilities
 
 Resolve the Herdr server/session and project checkout before dispatch. A server
@@ -16,6 +12,15 @@ may be controlled from an unattended process; an interactive PM pane is not a
 universal prerequisite. Inspect the selected target, available shell panes and
 live agents before creating or reusing a worker. Installation, server startup
 and integration activation are separate setup work.
+
+Herdr sessions provide separate runtime namespaces, not a project-keyed
+controller lock. Require the configured launcher/scheduler to establish the
+parent orchestrator's exclusive project admission before dispatch. If that
+exclusivity cannot be confirmed, do not start an unattended run.
+
+Herdr does not provide project-level admission in this mapping. Its documented
+hard process-tree cancellation is also unsupported unless the selected
+harness supplies and verifies that capability; use `drain` otherwise.
 
 `execution.runtimeOptions.session` or `execution.runtimeOptions.machine`
 selects the target. Use only one targeting mode for an operation.
@@ -31,9 +36,16 @@ supported `--machine` selector instead. Retain that target with the run record.
 
 | Configured harness | Herdr kind mapping |
 | --- | --- |
-| `codex` | `codex` |
-| `agent-cursor` | `cursor` |
+| `codex` | `codex`; pass the selected model as `-m <model>` in the argument array after `--`. |
+| `agent-cursor` | `cursor`; pass the selected model as `--model <model>` in the argument array after `--`. |
 | `fx` or another harness | No mapping supplied here; verify supported kind/executable and control operations before dispatch. |
+
+Keep model arguments as separate array entries rather than interpolating them
+into a shell command. Herdr's automation example uses `-m <model>` for Codex;
+Cursor documents `--model <model>` for its CLI. Use the interactive harness
+mode so Herdr can retain and observe the worker; non-interactive modes require
+a separate lifecycle mapping. See [Herdr agent automation](https://herdr.dev/docs/agent-automation/)
+and [Cursor CLI parameters](https://docs.cursor.com/en/cli/reference/parameters).
 
 Herdr selects the interactive executable through its kind. Resolve model and
 other launch arguments through that harness's verified interface and project
@@ -97,9 +109,14 @@ herdr agent send-keys "$worker_name" ctrl+c
 The harness determines the effect of that key. Confirm interruption and any
 remaining processes using a verified harness-specific procedure. An idle badge
 or successful key delivery is insufficient to claim that all work stopped.
-Until that procedure is available, report active/uncertain work and retain
-ownership instead of launching a replacement. Releasing detection metadata
-does not terminate a process. Do not stop the whole server to cancel one run.
+The documented Herdr operations do not establish a process-tree termination
+guarantee. Treat `ctrl+c` as best effort, not confirmed cancellation. Hard
+`onDeadline: halt` is unsupported unless the selected harness supplies a
+verified process-tree stop and confirmation procedure. The default `drain`
+policy remains available. If a halt is requested without that capability,
+report active/uncertain work and retain ownership instead of launching a
+replacement. Releasing detection metadata does not terminate a process. Do not
+stop the whole server to cancel one run.
 
 After a confirmed stop, reconcile late outputs through tracker under the parent
 contract. Reuse only a confirmed available shell pane and the intended session

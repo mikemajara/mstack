@@ -1,5 +1,6 @@
 ---
 name: mstack-tracker
+version: 0.1.0
 description: Read and record work specifications, workflow facts, evidence and relationships through a selected work-record integration.
 ---
 
@@ -10,7 +11,13 @@ coordinates stories through those phases. Tracker performs record operations.
 These skills guide behavior; access is controlled by the environment the actor
 runs in.
 
-Draft: installed cross-skill reference resolution is not specified.
+Cross-skill links are relative to this skill directory. A full mStack release
+installs all three version-matched skill directories as siblings, preserving
+their names and layout. Tracker uses workflow for required content and gates;
+when an operation depends on a missing linked contract, stop that operation and
+report the incomplete installation rather than searching for or substituting
+another version. Tracker may be used for operations whose required contract is
+available without orchestrator; coordinating a run requires orchestrator.
 
 Record specifications, validated workflow facts, evidence and relationships.
 Follow [mstack-workflow](../mstack-workflow/SKILL.md) contracts for required

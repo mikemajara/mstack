@@ -6,17 +6,24 @@ belongs to its actual runtime. Follow the shared
 [execution contract](../SKILL.md#execution-integration-contract) and
 [configuration](configuration.md); phase requirements remain in workflow.
 
-Draft: tool signatures vary with the current Cursor surface. This mapping
-requires inspecting the exposed tool schema; a portable task cancellation
-operation and confirmed deadline enforcement have not been established.
+Inspect the exposed tool schema before use because signatures vary by Cursor
+surface. Draft: no live runtime trial has validated this mapping on the selected
+Cursor task surface. Unattended use is conditional: `drain` is the default;
+configure `onDeadline: halt` only if the exposed native task operation supports
+cancellation and the integration can confirm the task stopped. If it cannot,
+hard halt is unsupported. Do not infer native task support from the separate
+Cursor SDK.
 
 ## Availability and model selection
 
 Inspect the current session's delegation tool and existing task identities.
 Cursor documents [subagents](https://cursor.com/docs/subagents) as separate
 contexts, with foreground/background execution and returned agent IDs for
-resume. Native tasks use the parent's Cursor access; other harnesses require
-their own launch integration.
+resume. Resume only within the same controller session for the same confirmed
+worker assignment. Across controller sessions, reconcile the previous task
+and start a fresh task from current project records; do not carry forward its
+conversation. Native tasks use the parent's Cursor access; other harnesses
+require their own launch integration.
 
 Resolve the role's model through shared configuration. Pass it through the
 native launch tool when supported, or use an existing custom subagent
@@ -34,7 +41,7 @@ required context in the mandate; a separate context is not a separate checkout.
 | --- | --- |
 | Launch | Invoke the exposed Task/delegation tool with the admitted mandate and resolved model, using its actual schema. Retain its agent/task ID. |
 | Observe/wait | Foreground return, background completion event, or the task's exposed status/output mechanism. |
-| Continue | Resume the recorded agent ID through the exposed delegation operation. |
+| Continue | Within the same controller session, resume the recorded agent ID through the exposed delegation operation for the same confirmed assignment. |
 | Halt | Use a cancellation operation for that task if the current surface supplies one; otherwise report unsupported cancellation and any active task. |
 | Reconcile/release | Use returned output and retained tracker artifacts through the parent contract before retry or context reuse. |
 
@@ -52,9 +59,16 @@ surface explicitly supports changing it.
 
 Use background delegation or a verified interruptible foreground operation
 when the controller must continue receiving stop/deadline signals. Apply the
-shared story and elapsed-time controls before each launch or resume.
+shared story and elapsed-time controls before each launch or same-session
+resume. Do not resume a task across a controller-session boundary.
 
-A user halt closes admission even if task cancellation is unavailable. Report
-that limitation and retain active/uncertain task ownership for reconciliation.
+Native subagents may run unattended with the shared default `drain` behavior.
+Configure `onDeadline: halt` only when the current task surface exposes
+cancellation and the integration can confirm the task stopped. Before an
+unattended run, disclose when cancellation cannot be confirmed.
+
+A user halt closes work dispatch even if task cancellation is unavailable.
+Report that limitation and retain controller admission and active/uncertain
+task ownership through reconciliation and checkpointing.
 Do not promise a hard stop at a deadline without a supported cancellation and
 confirmation path. Model fallbacks use the parent's configured-candidate rule.

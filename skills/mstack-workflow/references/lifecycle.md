@@ -2,8 +2,6 @@
 
 This file is the flow across phases: where work can enter, how gates and blocked work behave, and what the phase-file header fields mean. Each phase contract is a file in [phases](phases/).
 
-Draft: detailed phase contracts are incomplete. An unspecified gate is not a pass.
-
 [Research][phase:research] is the earliest phase, not a mandatory entry point. Work can
 enter [research][phase:research], [refinement][phase:refinement] or
 [implementation][phase:implementation] when the destination's prerequisites are
@@ -19,7 +17,7 @@ flowchart TD
     Research -->|Research exit / refinement entry gate passes| Refine
     Refine -->|Specification and verification brief ready| Implement
     Refine -->|Missing facts prevent specification| Research
-    Implement -->|Specified features are implemented in a reviewable PR| QA[QA]
+    Implement -->|Implementation gates pass; independent QA is assigned| QA[QA]
     Implement -->|Specification hole| Refine
     QA -->|Code defect| Implement
     QA -->|Specification hole| Refine

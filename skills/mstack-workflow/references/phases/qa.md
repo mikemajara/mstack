@@ -6,8 +6,6 @@ returns: [implementation, refinement]
 
 # QA
 
-Draft: gate wording remains under review. An unspecified gate is not a pass.
-
 ## Entry prerequisites
 
 Stories in [QA][phase:qa] have code within the specified scope that implements the features the specification describes, and executable verification scenarios for the acceptance criteria.

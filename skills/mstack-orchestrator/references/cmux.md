@@ -5,9 +5,12 @@ Use runtime `cmux` with a configured CLI harness. Follow the parent
 [configuration](configuration.md). Workflow and tracker remain the sources for
 phase requirements and work records.
 
-Draft: mappings for two different command surfaces: the macOS app and cmux TUI.
-Harness launch arguments, session readiness and confirmed cancellation need
-verification with the installed version. Do not mix the two CLI grammars.
+The macOS app and cmux TUI are separate command surfaces; select one and do not
+mix their CLI grammars. Draft: no live run has validated a selected installed
+interface/harness pairing. Before unattended dispatch, confirm launch readiness
+and a way to observe task completion. Default to `drain`; configure hard halt
+only when the selected harness can stop the process and confirm its termination.
+Closing a pane or terminal alone does not prove process-tree cancellation.
 
 ## Availability and target
 
@@ -95,7 +98,8 @@ run controls usable. Notifications and terminal text alone do not establish a
 validated phase result. Apply the parent reconciliation procedure before
 continuation, fallback or workspace reuse.
 
-On halt, close admission and interrupt only workers owned by this run. Confirm
+On halt, close work dispatch and interrupt only workers owned by this run.
+Retain controller admission through reconciliation and checkpointing. Confirm
 the harness task and relevant processes stopped; input acknowledgment is not
 that confirmation. If confirmation is unavailable, report and retain uncertain
 ownership. Deadline cancellation requires that capability; draining follows

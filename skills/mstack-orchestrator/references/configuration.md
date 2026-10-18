@@ -7,11 +7,18 @@ of the optional `tracker.issues` key (`github` or `filesystem`). If no issue
 tracker is selected, filesystem issues are the default; a configured tracker's
 access failure does not select that fallback. PR hosting remains independent.
 
-Draft: this reference defines configuration semantics, not an executable loader.
-The runtime/harness mappings must supply concrete launch and control operations.
-The durable run-state file format and concurrent controller locking are not
-specified. Project memory lives in `.mstack/memory.md` under
-[workflow memory](../../mstack-workflow/references/memory.md) and project instructions.
+This reference defines configuration semantics for the actor; it does not
+specify an executable loader. Runtime/harness mappings supply concrete launch
+and control operations.
+
+Draft: the shared admission contract is defined in the orchestrator skill, but
+no runtime mapping here demonstrates its enforcement. Before unattended use,
+validate that the launcher/scheduler denies concurrent controller admission,
+allows recovery-only admission only after the prior controller has ended, and
+retains admission through reconciliation and checkpointing. mStack specifies
+these behaviors but does not supply the lock itself. Project memory lives in
+`.mstack/memory.md` under [workflow memory](../../mstack-workflow/references/memory.md)
+and project instructions.
 
 ## Resolution and defaults
 
@@ -146,14 +153,34 @@ candidate list is exhausted, report the execution hold and resume condition.
 | Setting or signal | Meaning |
 | --- | --- |
 | `run.stories` | Optional ordered series of story references. Dispatch only within that series. If omitted, use the backlog scope requested for this run; omission does not expand that scope. |
-| `run.maxDurationMinutes` | Optional positive elapsed-time admission limit, measured from the retained run start. Resuming the same run does not restart its clock. |
-| `run.onDeadline` | `drain` by default; `halt` requests cancellation of active workers at the deadline and requires runtime support. |
-| Explicit user halt | Immediately closes admission and requests cancellation. The runtime maps the stop signal to its worker control mechanism. |
+| `run.maxDurationMinutes` | Optional positive elapsed-time admission limit for one controller session. Each scheduled session gets its own limit; this setting does not accumulate across sessions. |
+| `run.onDeadline` | `drain` by default; closes new work dispatch at the deadline and lets admitted workers finish. `halt` also requests cancellation of active workers and requires runtime support. |
+| Explicit user halt | Immediately closes new work dispatch and requests cancellation. Keep controller admission until workers are reconciled and the session checkpoint is recorded. The runtime maps the stop signal to its worker control mechanism. |
 
-Configured stop conditions combine: reaching any one closes admission. An empty
-story series has no work. For a series, stop when no further eligible action
-remains within it; retain unfinished stories and their reasons. Workflow
-determines completed, returned and blocked outcomes.
+Controller admission and work dispatch are distinct. The launcher/scheduler
+must prevent concurrent controller sessions. Once the prior controller is
+confirmed ended, a new controller may enter recovery-only mode if a worker is
+active or uncertain: it may inspect records and runtime state, observe or
+cancel that worker, and checkpoint reconciliation facts. It may not dispatch
+replacement work, continue the uncertain worker or release/reassign its claim
+until the worker's outcome is reconciled. Runtime-specific configuration and
+enforcement for this admission behavior are not yet mapped.
+
+There is no universal rolling context or usage threshold; 90% of a five-hour
+window is an example, not a default. A runtime may provide an optional guard
+through its `execution.runtimeOptions`. Its reference must define the measured
+signal, units, window, polling cadence, threshold and stop effect. If a project
+requests a guard that the selected runtime cannot measure or enforce, stop
+before dispatch rather than ignore it. No shared guard field or default
+threshold is defined.
+
+Configured stop conditions combine: reaching any one closes new work dispatch.
+The controller remains active to observe workers and record the session
+checkpoint. If it ends with an active or uncertain worker, a later controller
+may use recovery-only admission as described above. An empty story series has
+no work. For a series, stop when no further eligible action remains within it;
+retain unfinished stories and their reasons. Workflow determines completed,
+returned and blocked outcomes.
 
 An omitted duration means no elapsed-time limit. Other run controls still
 apply. Completion of the requested work, an explicit halt or any

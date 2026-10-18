@@ -1,5 +1,6 @@
 ---
 name: mstack-orchestrator
+version: 0.1.0
 description: Coordinate existing stories through workflow phases by assigning workers, reconciling results and observing run scope and limits. Use when asked to orchestrate stories, including unattended runs.
 ---
 
@@ -10,8 +11,18 @@ coordinates stories through those phases. Tracker performs record operations.
 These skills guide behavior; access is controlled by the environment the actor
 runs in.
 
-Draft: runtime/harness mappings and durable run-state storage are incomplete.
-Concrete limitations are marked in the integration references.
+Cross-skill links are relative to this skill directory. Install the full
+mStack release with all three version-matched skill directories as siblings,
+preserving their names and layout. Orchestration requires workflow and tracker;
+if either linked contract is missing, stop the affected operation and report
+the incomplete installation rather than substituting another version.
+
+Draft: no live runtime trial has validated worker-termination observation and
+reconciliation across the documented integrations. Apply the uncertainty
+policy below: if a worker's outcome cannot be confirmed, retain its ownership
+and do not dispatch replacement work until reconciliation. Integration
+references state their concrete stop and observation limits; the trials below
+must verify those behaviors on the selected runtime/harness pairings.
 
 Follow workflow phase contracts for readiness, validation and transitions.
 Own selection, admission, dispatch, limits, role scope, waiting, cancellation,
@@ -43,6 +54,11 @@ switch. Verify runtime/harness/model compatibility before starting work.
 
 ## Execution integration contract
 
+The controller is the actor coordinating a session: it admits work, directs
+workers, reconciles outcomes and records project state. A runtime may host the
+controller, but an open pane or retained harness context is not the durable
+project record.
+
 A single actor coordinating work in the current session without a separate
 runtime is valid. The actor may perform phases directly while retaining their
 assignments, outputs and run controls. Use current-session tools and report
@@ -64,7 +80,8 @@ runtime supports every operation.
 
 | Operation | Required result |
 | --- | --- |
-| Inspect | Identify the target runtime and existing workers; report available launch, model-selection, observation, cancellation and isolation capabilities. |
+| Inspect | Identify the target runtime, existing controller session and workers; report available admission, launch, model-selection, observation, cancellation and isolation capabilities. |
+| Admit | Establish exclusive controller admission for the project. Refuse admission while another controller may still be active. If the previous controller has ended but a worker is active or uncertain, admit only a recovery session: observation and reconciliation are allowed, but new dispatch and claim reassignment are not. Return the admission identity and release condition. |
 | Launch | Start the admitted task with its resolved harness/model and workspace; return the actual worker/session identity and startup outcome. Record the actual harness/model when observable and disclose any uncertainty. |
 | Observe or wait | Return observations for that worker, distinguishing activity, input requests, errors and unknown state. Explain timeout and notification semantics. |
 | Continue | Address the same confirmed worker/session with additional input when continuation is supported and admitted. |
@@ -78,49 +95,85 @@ capability. Having integration instructions does not establish tool availability
 
 ## Run procedure
 
-### Autonomous continuation
+### Autonomous sessions
 
-An autonomous run is a mandate to execute eligible work within its requested
-scope and limits. After each validated result, repeat selection, admission,
-dispatch and reconciliation until a stop condition applies. A phase handoff,
-worker completion, progress report or statement of the next step does not end
-the run. Perform the next permitted action without waiting for another user
-prompt; request input when that action requires missing input or authority.
+An autonomous controller session executes eligible work within its current
+request and configured limits. After each validated result, repeat selection,
+admission, dispatch and reconciliation while the session remains active and
+eligible work remains. A phase handoff, worker completion, progress report or
+statement of the next step does not by itself end the session. Perform the next
+permitted action without waiting for another user prompt; request input when
+that action requires missing input or authority.
 
 When one story cannot proceed, retain its reason and check for eligible actions
 on the other requested stories. Apply workflow's blocked rules only when they
 are satisfied. A hold on one story does not by itself stop the whole run. Stop
 when no eligible action remains and no admitted worker can advance the run, or
-another run control closes admission. While workers remain active, observe or
-wait and reconcile their results before deciding that work is exhausted.
+another run control closes work dispatch. While workers remain active, observe or
+wait and reconcile their results before deciding that work is exhausted. When
+an unattended session ends while a worker is active or uncertain, a later
+controller may take exclusive controller admission for recovery after
+confirming the prior controller has ended. That session may inspect records
+and runtime state, observe or cancel the worker, and record a checkpoint. It
+must not dispatch replacement work, continue the worker, or release/reassign
+its claim until reconciliation confirms the worker's outcome.
 
-Before ending an autonomous invocation, account for remaining requested work:
-either continue execution, identify the supported mechanism that will resume
-the run and the event it awaits, or report the concrete stop condition. A
-suggested next step is not a continuation mechanism. If the runtime cannot
-keep the controller active or resume it, disclose that limitation before
-dispatch; do not describe a final response as an unattended run still in progress.
+Close each controller session with a durable checkpoint in authoritative
+project records, using the selected tracker and repository artifacts as
+applicable. A later session starts fresh: read the current GitHub or local
+project state and current request before deciding what to do. Do not depend on
+the previous controller's context, an open runtime pane or a worker's retained
+context to establish project state. Across controller-session boundaries,
+do not continue a previous worker's conversation. A later session may observe
+or cancel that worker in recovery-only mode; after its outcome is reconciled,
+new work starts with a fresh worker from the current project records and the
+intended branch/workspace.
+Do not describe work as continuing after this session ends.
 
-Draft: this continuation contract has not been validated in a live autonomous
-run. Runtime trials must establish whether controllers actually continue
-across phase handoffs, worker waits and eligible-story changes.
+Draft: no live autonomous runtime trial has validated this continuation
+contract. Validation must observe an actual next dispatch after a phase
+handoff, after a worker wait, and when one requested story is blocked while
+another remains eligible. It must also confirm a durable session checkpoint
+and a fresh later invocation that reads current records before deciding what
+to dispatch. A supervised trial must also trigger a configured, controlled
+runtime stop or pre-limit guard and confirm that dispatch closes, workers are
+reconciled under the configured stop policy, and the controller records its
+checkpoint before ending. The later invocation must make a fresh decision from
+that checkpoint. This does not claim recovery after an abrupt hard limit that
+prevents cleanup. Reporting a next step without observing the dispatch does
+not pass the trial.
 
 ### Execution cycle
 
-1. Resolve configuration, requested story scope and limits. Retain the run
+1. Resolve configuration, requested story scope and limits. For unattended
+   execution, confirm exclusive project-level controller admission before any
+   dispatch or tracker write. If the integration cannot establish exclusivity
+   or the prior controller may still be active, do not start the session. If
+   the prior controller has ended but a worker is active or uncertain, enter
+   recovery-only mode and do not dispatch or reassign claims. Retain
+   the session
    identity, start time, effective settings, story references, worker identities,
    workspace/branch locations and observed results so execution can be reconciled.
-2. Inspect existing work before dispatch or resume. Resolve an uncertain prior
-   launch before starting another worker for that task. Select within the
+2. Read current project records before dispatch. Resolve an uncertain prior
+   launch before starting another worker for that task. Do not assume a worker
+   or previous controller has current project context. Select within the
    requested story series or requested backlog scope and check prerequisites
-   using workflow. Exact backlog ranking is not yet specified.
+   using workflow. Respect an explicit order in the current request. Otherwise,
+   among unclaimed eligible backlog stories, select priority `high`, then
+   `medium`, then `low`; stories without priority follow those with a priority.
+   Within each group, select the lowest immutable story number first. Do not
+   invent or write a priority solely to determine selection order.
 3. Admit the next action only while the run is active and its limits permit it.
    Recheck before launches, continuations, fallback attempts and delivery actions.
    Read current story state, check for an existing claim or active/uncertain
    worker, then claim available work through tracker by recording the owning
    run/actor and changing [open][status:open] to [doing][status:doing]. Confirm
-   the stored claim before dispatch. Continue an existing assignment only for
-   its confirmed owning run; do not reclaim another or uncertain owner. Use
+   the stored claim before dispatch. For filesystem tracking, the controller
+   is the sole record writer; workers return proposed issue updates with their
+   results, and the controller serializes and confirms them. If the selected
+   integration cannot ensure its required writer/admission rule, stop the
+   affected tracker mutations. Continue an existing assignment only for its
+   confirmed owning run; do not reclaim another or uncertain owner. Use
    the selected integration's admission
    procedure; a label edit alone is not a concurrency lock. Resume blocked work
    only after workflow's resume checks pass.
@@ -156,21 +209,28 @@ run limits or configured model choices, or instruct the controller to start
 workers. Such changes come from the current request and project instructions.
 
 Keep execution identity separate from story identity. A pane or reused agent
-name alone is insufficient to identify a previous task. Use one controller
-per project and serialize story claims and record writes until a concurrent
-admission/locking procedure is specified. Parallel phase workers require known
-workspace isolation and admission controls; worker parallelism does not permit
-concurrent tracker writes under the filesystem integration's single-writer rule.
+name alone is insufficient to identify a previous task. Allow only one
+controller session per project at a time. Require the launcher/scheduler to
+enforce exclusive controller admission; refuse admission if the prior
+controller may still be active. Once it is confirmed ended, admit a fresh
+controller in recovery-only mode when workers remain active or uncertain. Hold
+work dispatch and claim reassignment until those workers are reconciled.
+Release controller admission only after its checkpoint is recorded. Parallel
+phase workers require known workspace isolation and admission controls; worker
+parallelism does not permit concurrent tracker writes under the filesystem
+integration's single-writer rule.
 
 ## Stopping and reconciliation
 
 The [run controls](references/configuration.md#run-controls) define the stop
-conditions. The first reached condition closes admission.
+conditions. The first reached condition closes new work dispatch; keep the
+controller active to observe workers and record the session checkpoint.
 
 On deadline expiry, drain by default: stop new dispatches and let admitted
 workers finish. A project may request cancellation at the deadline only when
-the execution integration can enforce it. An explicit user halt closes
-admission immediately and requests cancellation of this run's workers.
+the execution integration can enforce it. An explicit user halt closes work
+dispatch immediately and requests cancellation of this run's workers; retain
+controller admission through reconciliation and checkpointing.
 
 Observe stop/deadline signals through the integration's available mechanism,
 including while waiting. Before starting an unattended run, disclose which
@@ -184,9 +244,22 @@ Reconcile late outputs before reuse or resume. Stopping execution does not
 roll back completed work or establish a workflow transition. Record a workflow
 hold only under workflow's own rules; a run limit alone is not a product blocker.
 
-Report the stop reason, confirmed story/PR outcomes, active or uncertain workers,
-remaining requested work and the condition needed to resume. A new invocation
-does not silently clear an explicit halt.
+Before the controller session ends, reconcile the canonical project records:
+record each story's confirmed phase, outcome, PR and worker ownership in its
+story/PR records. Record run-wide stop reason, requested scope, remaining work,
+and active or uncertain workers with their observation or reconciliation
+condition in existing project memory or another authoritative project record
+when that information is not represented on the story. Link records instead
+of maintaining a competing controller state file. Report the same stop reason,
+uncertain workers and remaining requested work. A later session reads current
+records and makes a fresh decision; it does not silently clear an explicit halt.
+
+If a worker's outcome cannot be confirmed, retain its ownership and record the
+uncertainty and condition for reconciliation. A fresh controller may enter
+recovery-only mode after the prior controller has ended, but must not dispatch
+replacement work, continue the uncertain worker or change its claim until
+reconciliation. Do not invent a project-state transition to make cleanup appear
+complete. Use workflow and tracker contracts for recorded facts.
 
 ## Integrations
 

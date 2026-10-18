@@ -9,12 +9,17 @@ or when filesystem tracking is explicitly selected. Follow the parent
 provides issue storage, relationships and recorded workflow facts. PRs, QA
 records and merge confirmation require a separate integration.
 
-Draft: operations are instructions, with no bundled CLI or automatic locking.
-The initial version requires one writer in a designated shared project
-checkout. Independent number allocation or concurrent issue writes across
-worktrees are unsupported.
-Concurrent controller admission requires a separate locking procedure, which
-is not supplied here.
+Draft: the instruction-only single-writer procedure has not been validated in
+a live concurrent run. Validation must exercise overlapping write requests and
+confirm that only the controller writes in the authoritative checkout, worker
+proposals are serialized against current records, and a caller that cannot
+ensure one writer stops without creating or overwriting a competing record.
+This instruction-only integration currently defines no shared lock protocol,
+bundled CLI or file lock.
+Standalone tracker use requires the caller to ensure one writer and serialize
+writes. Independent number allocation and concurrent issue writes across
+worktrees are unsupported. Project-level controller admission remains the
+orchestrator launcher's responsibility.
 
 ## Project and record identity
 
@@ -38,12 +43,16 @@ confirmation separately from commit or publication confirmation. Uncommitted
 records are provisional until committed through the project's chosen route.
 
 Designate one authoritative checkout for issue reads and writes before the
-first operation. Serialize allocation and updates there, including requests
-from workers in other worktrees. Give workers that location and the intended
-record and current contents; a branch copy is not current tracker state. If
-the checkout cannot be accessed, report the missing access rather than writing a second
-copy. Commit and publication procedures follow project policy; this contract
-does not include direct default-branch writes or pushes in the operation's scope.
+first operation. During a coordinated run, the controller alone writes issue
+records; workers return proposed updates with their findings, and the controller
+serializes and confirms them. For standalone use, the caller must ensure one
+writer and serialize allocation and updates there, including requests from
+workers in other worktrees. Give workers the record identity and current
+contents; a branch copy is not current tracker state. If the checkout cannot
+be accessed or single-writer use cannot be ensured, report the missing access
+or concurrency control rather than writing a second copy. Commit and
+publication procedures follow project policy; this contract does not include
+direct default-branch writes or pushes in the operation's scope.
 
 ## File format
 
