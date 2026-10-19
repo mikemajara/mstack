@@ -13,8 +13,10 @@ the next development decision.
   skill. Every release entry summarizes all skill changes and states their
   impact/adaptation requirement for that skill, including explicit no-change
   entries. The authoring session has added the initial version fields and
-  `0.1.0` baseline changelogs; no public release has been made. mStack does not
-  ship an installer for Herdr, fx or other external runtime products.
+  `0.1.0` baseline changelogs; no public release has been made. Users can
+  install the skill set from GitHub with the third-party Skills CLI:
+  `npx skills add mikemajara/mstack --skill '*'`. mStack does not bundle an
+  installer, and does not install Herdr, fx or other external runtime products.
 - The user settled the autonomous-session boundary: each controller session
   should close with a durable checkpoint, and a later session should start fresh
   from GitHub or local project records. Do not rely on open runtime panes or
@@ -167,15 +169,15 @@ the next development decision.
   Herdr runs that evaluates autonomous continuation, worker reconciliation,
   session checkpoints and fresh-session decisions. Retain logs/evidence and
   decide the reliability pass criteria in that story; no live trial has run.
-- **Project setup and feedback intake:** Decide whether first use should check
-  for `.mstack/` and ask before creating it, use a separate setup skill/repo,
-  or another entry point. Separately consider a thin feedback skill that can
-  file bug reports and feature requests at
+- **Project setup and feedback intake:** The Skills CLI install path is
+  confirmed, but target-project setup remains undecided: whether first use
+  should check for `.mstack/` and ask before creating it, use a separate setup
+  skill/repo, or another entry point. Separately consider a thin feedback skill
+  that can file bug reports and feature requests at
   https://github.com/mikemajara/mstack. These are options, not decided behavior.
-- There is no installer in this package. Distribution still needs to preserve
-  the three same-version sibling skill directories and relative paths. Links to
-  vendor installation instructions may be considered as documentation, not as
-  an mStack installer.
+- Distribution must preserve the three same-version sibling skill directories
+  and relative paths. The third-party Skills CLI supports installing all skills
+  from the repository; mStack itself does not bundle an installer.
 
 Tracker and orchestrator procedures include documented limits. Autonomous
 session reliability, filesystem lock behavior, and project setup/feedback intake
