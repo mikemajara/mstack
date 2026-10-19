@@ -9,7 +9,7 @@ workflow owns phase requirements and tracker owns work records.
 
 Command and response details follow the official
 [`fx ask` documentation](https://fx.sh/docs/using-fx/fx-ask). This confirms the
-documented CLI shape; it is not a live mStack runtime or reliability trial.
+documented CLI shape; it is not a live mstack runtime or reliability trial.
 
 ## Availability and launch
 

@@ -37,7 +37,7 @@ exit requirements consistent so each phase reference stands alone.
 
 ## Versioning and release notes
 
-Release mStack as one versioned set. The `version` field in each of the three
+Release mstack as one versioned set. The `version` field in each of the three
 skill frontmatters must match; the starting version is `0.1.0`. Apply one
 version bump to all three skills for every release, including skills whose
 behavior does not change.

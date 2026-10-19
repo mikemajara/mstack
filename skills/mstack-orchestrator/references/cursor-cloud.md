@@ -1,6 +1,6 @@
 # Deferred: Cursor Cloud integration
 
-Cursor Cloud is not supported in mStack 0.1.0. This reference preserves the
+Cursor Cloud is not supported in mstack 0.1.0. This reference preserves the
 researched API mapping for future work; do not select `cursor-cloud` as a
 runtime or rely on this mapping for unattended work. It has not had a live
 runtime trial.

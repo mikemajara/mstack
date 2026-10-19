@@ -34,7 +34,7 @@ memory contracts. See [AGENTS.md](../AGENTS.md) for the authoring rules.
 ```text
 skills/
   mstack-workflow/
-    SKILL.md             # Shared mStack version in frontmatter
+    SKILL.md             # Shared mstack version in frontmatter
     CHANGELOG.md         # Stack-wide release changes and workflow impact
     references/
       attributes.json     # Work-item type, priority, phase and status vocabulary
@@ -47,7 +47,7 @@ skills/
       verification.md     # Shared evidence, tested commits and invalidation
       memory.md           # Default read/capture and deliberate promotion
   mstack-orchestrator/
-    SKILL.md             # Shared mStack version in frontmatter
+    SKILL.md             # Shared mstack version in frontmatter
     CHANGELOG.md         # Stack-wide release changes and orchestrator impact
     references/
       configuration.md    # .mstack/config.json, execution settings and tracker selector
@@ -56,7 +56,7 @@ skills/
       cursor-subagents.md # Native Cursor session delegation
       fx.md               # fx ask CLI harness mapping; native subagents deferred
   mstack-tracker/
-    SKILL.md             # Shared mStack version in frontmatter
+    SKILL.md             # Shared mstack version in frontmatter
     CHANGELOG.md         # Stack-wide release changes and tracker impact
     references/
       filesystem.md       # Default local issues, format, identity and operations

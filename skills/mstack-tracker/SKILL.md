@@ -11,7 +11,7 @@ coordinates stories through those phases. Tracker performs record operations.
 These skills guide behavior; access is controlled by the environment the actor
 runs in.
 
-Cross-skill links are relative to this skill directory. A full mStack release
+Cross-skill links are relative to this skill directory. A full mstack release
 installs all three version-matched skill directories as siblings, preserving
 their names and layout. Tracker uses workflow for required content and gates;
 when an operation depends on a missing linked contract, stop that operation and

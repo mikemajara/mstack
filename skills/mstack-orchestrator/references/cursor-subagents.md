@@ -1,6 +1,6 @@
 # Deferred: Cursor native subagents
 
-Native Cursor subagents are not supported in mStack 0.1.0. This reference
+Native Cursor subagents are not supported in mstack 0.1.0. This reference
 preserves the researched operation mapping for later work. Do not set
 `execution.delegation` to `subagent` in this release; the mapping has not had a
 live runtime trial.

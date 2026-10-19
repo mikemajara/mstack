@@ -1,12 +1,12 @@
 # mstack-orchestrator changelog
 
-Each entry describes the mStack release across all three skills and its effect
-on orchestrator. The `version` in this skill's frontmatter is the shared mStack
+Each entry describes the mstack release across all three skills and its effect
+on orchestrator. The `version` in this skill's frontmatter is the shared mstack
 version.
 
 ## 0.1.0
 
-Initial versioned baseline for the three-skill mStack set. There is no earlier
+Initial versioned baseline for the three-skill mstack set. There is no earlier
 version to migrate from. The skills remain drafts; see their contracts for
 known limitations.
 
@@ -111,4 +111,4 @@ known limitations.
   replacement work while the worker may still be active.
 - Orchestrator uses tracker for issue and evidence operations. Tracker records
   outcomes but does not determine workflow readiness or grant execution scope.
-- Use all three skills at `0.1.0` when coordinating a complete mStack run.
+- Use all three skills at `0.1.0` when coordinating a complete mstack run.

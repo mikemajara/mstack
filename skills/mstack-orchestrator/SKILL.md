@@ -12,7 +12,7 @@ These skills guide behavior; access is controlled by the environment the actor
 runs in.
 
 Cross-skill links are relative to this skill directory. Install the full
-mStack release with all three version-matched skill directories as siblings,
+mstack release with all three version-matched skill directories as siblings,
 preserving their names and layout. Orchestration requires workflow and tracker;
 if either linked contract is missing, stop the affected operation and report
 the incomplete installation rather than substituting another version.
@@ -67,7 +67,7 @@ runtime. Runtime/harness launch settings apply when starting workers. If this
 actor implements the change, hand QA to a different actor; a lone implementer
 can proceed to the QA handoff but cannot supply its independent verdict.
 
-For mStack 0.1.0, Herdr is the supported execution runtime. Cursor Cloud and
+For mstack 0.1.0, Herdr is the supported execution runtime. Cursor Cloud and
 native Cursor subagents are deferred and unsupported; cmux is not included.
 Agent harness means the client running the agent, such as `agent-cursor`,
 `codex` or `fx`. Model tiers are project-configurable selections within those
@@ -269,7 +269,7 @@ complete. Use workflow and tracker contracts for recorded facts.
 | fx CLI | [Native CLI harness mapping](references/fx.md); use through a supported runtime |
 
 Cursor Cloud and native Cursor subagents have research references, but are not
-supported in mStack 0.1.0. Do not select them for a run. cmux is not part of
+supported in mstack 0.1.0. Do not select them for a run. cmux is not part of
 this release.
 
 Integration helpers, when needed, belong under `scripts/<integration>/` within

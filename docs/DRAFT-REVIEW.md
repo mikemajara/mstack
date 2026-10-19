@@ -1,7 +1,7 @@
 # Temporary draft review
 
 This temporary authoring note records decisions and remaining validation work;
-it is not an mStack product contract. The shared behavior decisions are in
+it is not an mstack product contract. The shared behavior decisions are in
 `Resolved during this review`. Remaining `Validation pending:` markers mean a
 runtime or filesystem-lock behavior lacks direct validation; they do not
 identify an open product decision. Clear a marker when evidence is obtained, or
@@ -114,7 +114,7 @@ product decision only if the evidence exposes an actual contract gap.
   deny concurrent admission, permit recovery-only takeover only after the old
   controller ends, and retain admission through checkpointing.
 - Cursor Cloud and native Cursor subagents are deferred and unsupported in
-  mStack 0.1.0. Their reference files preserve researched behavior for a future
+  mstack 0.1.0. Their reference files preserve researched behavior for a future
   release and must not be selected in this release.
 - [Filesystem tracker](../skills/mstack-tracker/references/filesystem.md) is
   instruction-only by design and now requires a short-lived lock scoped to the

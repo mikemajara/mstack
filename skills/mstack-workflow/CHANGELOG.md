@@ -1,12 +1,12 @@
 # mstack-workflow changelog
 
-Each entry describes the mStack release across all three skills and its effect
-on workflow. The `version` in this skill's frontmatter is the shared mStack
+Each entry describes the mstack release across all three skills and its effect
+on workflow. The `version` in this skill's frontmatter is the shared mstack
 version.
 
 ## 0.1.0
 
-Initial versioned baseline for the three-skill mStack set. There is no earlier
+Initial versioned baseline for the three-skill mstack set. There is no earlier
 version to migrate from. The skills remain drafts; see their contracts for
 known limitations.
 
@@ -94,4 +94,4 @@ known limitations.
 - Orchestrator dispatches QA only after implementation checks pass or the PR
   states that no applicable runnable checks exist. Tracker preserves these
   results with the PR record; no new tracker field is required.
-- Use all three skills at `0.1.0` when coordinating a complete mStack run.
+- Use all three skills at `0.1.0` when coordinating a complete mstack run.

@@ -8,14 +8,14 @@ the next development decision.
 ## Current review — 2026-10-19
 
 - Versioning decisions are recorded in [AGENTS.md](AGENTS.md#versioning-and-release-notes):
-  one shared mStack version across the three skills, starting at `0.1.0`, with
+  one shared mstack version across the three skills, starting at `0.1.0`, with
   a version field in each skill frontmatter and an individual changelog per
   skill. Every release entry summarizes all skill changes and states their
   impact/adaptation requirement for that skill, including explicit no-change
   entries. The authoring session has added the initial version fields and
   `0.1.0` baseline changelogs; no public release has been made. Users can
   install the skill set from GitHub with the third-party Skills CLI:
-  `npx skills add mikemajara/mstack --skill '*'`. mStack does not bundle an
+  `npx skills add mikemajara/mstack --skill '*'`. mstack does not bundle an
   installer, and does not install Herdr, fx or other external runtime products.
 - The user settled the autonomous-session boundary: each controller session
   should close with a durable checkpoint, and a later session should start fresh
@@ -122,7 +122,7 @@ the next development decision.
   fallbacks and run controls in one `.mstack/config.json`; the earlier separate
   model-file proposal was rejected as unnecessary. These are instructions and
   configuration semantics, not an executable controller or configuration loader.
-- mStack 0.1.0 supports Herdr as the runtime and documents Codex, Cursor CLI
+- mstack 0.1.0 supports Herdr as the runtime and documents Codex, Cursor CLI
   and fx CLI harness mappings. Cursor Cloud and native Cursor subagents are
   deferred and unsupported; cmux is removed from the release scope. Do not
   assume interchangeable account routes. Model IDs are project choices.
@@ -143,7 +143,7 @@ the next development decision.
   Unsupported requested guards block dispatch; live runtime validation remains
   future work.
 - Cursor Cloud and native Cursor subagent references are retained for possible
-  later work, but neither is selectable in mStack 0.1.0. cmux support was
+  later work, but neither is selectable in mstack 0.1.0. cmux support was
   removed because there is no near-term plan to implement it. A low-priority,
   not-ready backlog story can be created if cmux is prioritized later.
 - Legacy remains frozen historical source material; removal is a separate
@@ -177,7 +177,7 @@ the next development decision.
   https://github.com/mikemajara/mstack. These are options, not decided behavior.
 - Distribution must preserve the three same-version sibling skill directories
   and relative paths. The third-party Skills CLI supports installing all skills
-  from the repository; mStack itself does not bundle an installer.
+  from the repository; mstack itself does not bundle an installer.
 
 Tracker and orchestrator procedures include documented limits. Autonomous
 session reliability, filesystem lock behavior, and project setup/feedback intake

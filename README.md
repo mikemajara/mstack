@@ -1,8 +1,8 @@
 # mstack
 
-mStack helps people and coding agents move software work through a clear delivery lifecycle, with explicit checks for what must be true before and after each phase.
+mstack helps people and coding agents move software work through a clear delivery lifecycle, with explicit checks for what must be true before and after each phase.
 
-![The mStack workflow, tracker and orchestrator abstractions](docs/mstack-architecture.jpeg)
+![The mstack workflow, tracker and orchestrator abstractions](docs/mstack-architecture.jpeg)
 
 ## How it works
 
@@ -42,4 +42,4 @@ The three skills are released together at one shared version. Each skill has a `
 
 ## Contributing
 
-This repository develops the mStack skills. See [AGENTS.md](AGENTS.md) for contributor guidance and [STRUCTURE.md](docs/STRUCTURE.md) for file ownership.
+This repository develops the mstack skills. See [AGENTS.md](AGENTS.md) for contributor guidance and [STRUCTURE.md](docs/STRUCTURE.md) for file ownership.

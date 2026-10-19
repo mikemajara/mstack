@@ -15,7 +15,7 @@ Validation pending: the shared admission contract is defined in the orchestrator
 skill, but no runtime mapping here demonstrates its enforcement. Before unattended use,
 validate that the launcher/scheduler denies concurrent controller admission,
 allows recovery-only admission only after the prior controller has ended, and
-retains admission through reconciliation and checkpointing. mStack specifies
+retains admission through reconciliation and checkpointing. mstack specifies
 these behaviors but does not supply the lock itself. Project memory lives in
 `.mstack/memory.md` under [workflow memory](../../mstack-workflow/references/memory.md)
 and project instructions.
@@ -97,12 +97,12 @@ actual executable/API operations. Naming a harness does not install it or
 provide an operation mapping. Account access follows the harness's configured
 authentication; a model ID does not transfer subscription access between clients.
 
-For mStack 0.1.0, `execution.delegation` must be `agent`. Native Cursor
+For mstack 0.1.0, `execution.delegation` must be `agent`. Native Cursor
 subagents are deferred and unsupported. The fx mapping covers the `fx ask` CLI
 only; fx subagents are also unsupported.
 
 `execution.runtimeOptions` holds target settings owned by the runtime reference.
-In mStack 0.1.0, supported runtime targets are Herdr's `session` or `machine`
+In mstack 0.1.0, supported runtime targets are Herdr's `session` or `machine`
 options. Resolve these before dispatch; do not pass arbitrary keys as CLI flags
 or mix one runtime's target settings into another's operation.
 When an override changes runtime, replace its `runtimeOptions` with settings
