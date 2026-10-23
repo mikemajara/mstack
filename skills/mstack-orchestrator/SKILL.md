@@ -120,8 +120,9 @@ its claim until reconciliation confirms the worker's outcome.
 
 Close each controller session with a durable checkpoint in authoritative
 project records, using the selected tracker and repository artifacts as
-applicable. A later session starts fresh: read the current GitHub or local
-project state and current request before deciding what to do. Do not depend on
+applicable. A later session starts fresh: read current stories through their
+selected canonical tracker, current PR/repository state and the current request
+before deciding what to do. Do not depend on
 the previous controller's context, an open runtime pane or a worker's retained
 context to establish project state. Across controller-session boundaries,
 do not continue a previous worker's conversation. A later session may observe

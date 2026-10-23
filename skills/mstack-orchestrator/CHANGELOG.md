@@ -69,6 +69,13 @@ known limitations.
   directories as siblings. Cross-skill links resolve relative to their owning
   skill; a missing required sibling makes the dependent operation unavailable.
 
+### Notion addition to the unreleased baseline
+
+- **Tracker:** Adds optional `notion` story storage with a prescribed database schema, target IDs, stable identity and record operations; live behavior is unvalidated and no connector is bundled. Stories have one canonical store, while GitHub supplies PRs, QA and merge confirmation independently. Users choosing Notion must supply access, database/data-source IDs and the required schema; existing GitHub/filesystem users need no adaptation or migration.
+- **Orchestrator:** Configuration now accepts `notion` and its tracker-owned target fields. Resolve Notion stories through tracker, read their canonical store during fresh-session recovery, and use the immutable numeric story ID for the existing tie-breaker. No execution/admission behavior changes; no other orchestrator adaptation is needed.
+- **Workflow:** No behavior change and no adaptation needed; phase, evidence and closure gates remain unchanged.
+- This is draft authoring within the unreleased `0.1.0` baseline, not a separate release or version bump.
+
 ### Impact on orchestrator
 
 - Orchestrator depends on workflow's current phase, validation and completion

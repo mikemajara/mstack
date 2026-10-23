@@ -44,8 +44,9 @@ instructions.
 > tracker being unavailable does not activate this fallback.**
 
 Resolve explicit current-request instructions over `tracker.issues` in the
-project's `.mstack/config.json`. Supported selections are `github` and
-`filesystem`. If neither source selects an issue tracker, default to
+project's `.mstack/config.json`. Supported selections are `github`, `notion`
+and `filesystem`. Select one system for new story records, not parallel editable
+copies in GitHub and Notion. If neither source selects an issue tracker, default to
 `filesystem`, storing issues under `.mstack/issues/`. An absent configuration
 file, absent `tracker` object or omitted `issues` key needs no setup to select
 this default. Malformed configuration, an invalid selector (including `null`
@@ -60,6 +61,12 @@ For example, an existing configuration can select GitHub Issues with:
   "tracker": { "issues": "github" }
 }
 ```
+
+Use `"issues": "notion"` to select Notion story storage; its
+[reference](references/notion.md#selection-and-target) defines the required
+`tracker.notion` target IDs and database schema. GitHub remains available
+independently for PRs and QA. Selecting either story tracker does not mirror
+stories into the other.
 
 The explicit `filesystem` value selects the same integration as the default.
 These are configuration semantics, not an executable loader. See the shared
@@ -135,6 +142,7 @@ current remote state. Do not silently switch the story's system of record.
 | --- | --- | --- |
 | Filesystem | Default issue storage when no issue tracker is selected; no PR hosting | [Filesystem](references/filesystem.md) |
 | GitHub | Stories in Issues; PRs, QA records and merge confirmation, independently of story storage | [GitHub](references/github.md) |
+| Notion | Stories in a prescribed database/data source; links to externally hosted PRs and QA; no PR hosting | [Notion](references/notion.md) |
 
 Integration helpers ship under `scripts/<integration>/` within this skill.
 The integration reference explains how to locate and invoke them against the

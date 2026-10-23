@@ -34,7 +34,9 @@ Try prompts like these with your coding agent:
 
 ## Work records
 
-The Tracker supports GitHub Issues and local filesystem records. The local tracker stores issues under `.mstack/issues/`; project memory and optional runtime configuration can also live under `.mstack/`. See the [filesystem tracker](skills/mstack-tracker/references/filesystem.md) and [project configuration](skills/mstack-orchestrator/references/configuration.md) for details.
+Choose [GitHub Issues](skills/mstack-tracker/references/github.md) or [Notion](skills/mstack-tracker/references/notion.md) for story storage; each story has one canonical record, not an editable copy in both. Notion defines a prescribed database schema and uses GitHub separately for PRs, QA and merge confirmation. Its mapping is instruction-only and has not been validated against a live database.
+
+When no tracker is selected, the [filesystem tracker](skills/mstack-tracker/references/filesystem.md) stores issues under `.mstack/issues/`. Project memory and optional [configuration](skills/mstack-orchestrator/references/configuration.md) can also live under `.mstack/`. A selected tracker's access failure never switches storage automatically.
 
 ## Releases
 

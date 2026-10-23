@@ -3,7 +3,7 @@
 Use one `.mstack/config.json` at the target project root for runtime, harness,
 models, role overrides, run controls and issue-tracker selection. Tracker owns
 the [issue-selection semantics](../../mstack-tracker/SKILL.md#issue-tracker-selection)
-of the optional `tracker.issues` key (`github` or `filesystem`). If no issue
+of the optional `tracker.issues` key (`github`, `notion` or `filesystem`). If no issue
 tracker is selected, filesystem issues are the default; a configured tracker's
 access failure does not select that fallback. PR hosting remains independent.
 
@@ -86,7 +86,12 @@ integration. A filesystem story reference identifies the project and its
 issue number. The example omits `tracker.issues`, so it uses the default unless
 the current request selects a tracker. To select GitHub Issues, add
 `"tracker": { "issues": "github" }` at the top level; no tracker configuration
-file or key is required to use filesystem issues.
+file or key is required to use filesystem issues. To select Notion, use
+`"tracker": { "issues": "notion", "notion": { "databaseId": "NOTION_DATABASE_ID", "dataSourceId": "NOTION_DATA_SOURCE_ID" } }`
+with the actual target IDs, or supply the target explicitly in the current
+request. The [Notion integration](../../mstack-tracker/references/notion.md)
+owns these target fields and the required schema. Select one canonical story
+store; GitHub PR hosting remains independent and no records migrate implicitly.
 
 `execution` selects default runtime and harness. Each role can override
 `runtime`, `harness`, `delegation`, `runtimeOptions` and `tier`. Resolve the role

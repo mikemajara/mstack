@@ -62,6 +62,7 @@ skills/
       filesystem.md       # Default local issues, format, identity and operations
       github.md           # Issues/PR operations, mappings and merge confirmation
       github-labels.json  # GitHub label names and display metadata
+      notion.md           # Prescribed Notion story database, properties and operations
     assets/
       issue.md            # Markdown issue template with YAML frontmatter
     scripts/
@@ -74,8 +75,8 @@ target-project behavior; root `MEMORY.md` records development of mstack itself.
 
 ## Optional integrations
 
-Runtime and delegation integrations belong to orchestrator; filesystem and
-GitHub integrations belong to tracker. Workflow points to tracker for its
+Runtime and delegation integrations belong to orchestrator; filesystem,
+GitHub and Notion integrations belong to tracker. Workflow points to tracker for its
 default issue storage; tracker owns selection and concrete operations. An
 integration is a bounded set of instructions for using a concrete
 system. It need not be a
