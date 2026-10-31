@@ -1,47 +1,83 @@
 # mstack
 
-mstack helps people and coding agents move software work through a clear delivery lifecycle, with explicit checks for what must be true before and after each phase.
+mstack helps people and coding agents move software work from a request to a
+merged, verified change. Each phase states what must be true before work
+enters it and what must be shown before it leaves.
+
+**Status:** draft skills, version 0.2.0. Live runtime and Notion behavior are
+not yet validated; see each skill's `CHANGELOG.md` for known limits.
 
 ![The mstack workflow, tracker and orchestrator abstractions](docs/mstack-architecture.jpeg)
 
-## How it works
+## Why
 
-The Workflow is the core. It defines the lifecycle from research through refinement, implementation and QA. Each phase has prerequisites, required outputs, exit checks and valid next steps. The lifecycle applies regardless of where a task, issue or story was created.
+Agents can write code quickly but often stop at "it looks done". mstack makes
+"done" a checkable claim: a story is delivered only when an independent QA
+actor has evidence that each acceptance criterion holds on a specific commit,
+and the change is merged.
 
-The Workflow can be used on its own. Add the other skills when a project needs them:
+## How it fits together
 
-- [mstack-workflow](skills/mstack-workflow/SKILL.md) defines the lifecycle, phase checks, transitions and project memory.
-- [mstack-tracker](skills/mstack-tracker/SKILL.md) defines where work is recorded and how records and statuses are represented.
-- [mstack-orchestrator](skills/mstack-orchestrator/SKILL.md) coordinates where, when and how agents run work through the lifecycle.
+Three skills, released together at one version:
 
-Together, the skills separate the rules for moving work forward, the records that hold its state, and the agents that coordinate it.
+| Skill | Owns | Use alone? |
+| --- | --- | --- |
+| [mstack-workflow](skills/mstack-workflow/SKILL.md) | Phases, gates, transitions, verification, project memory | Yes |
+| [mstack-tracker](skills/mstack-tracker/SKILL.md) | Where stories live and how their state is recorded | With workflow |
+| [mstack-orchestrator](skills/mstack-orchestrator/SKILL.md) | Which agent runs which phase, where and when | With both |
 
-## Quick start
+Workflow is the rulebook. Tracker and orchestrator follow its contracts; they
+never relax a gate.
 
-Install all three skills so their cross-references resolve within the same release:
+## Approach
 
-```sh
-npx skills add mikemajara/mstack --skill '*'
-```
+- **Phases.** Research establishes facts, refinement writes the scope and
+  acceptance criteria, implementation produces a reviewable PR, and QA judges
+  it. Code defects return to implementation; specification holes return to
+  refinement.
+- **Gates.** Each phase ends with required questions and pass conditions.
+  Unknown is not a pass.
+- **Evidence.** Every acceptance criterion maps to scenarios. QA records the
+  results, evidence and tested commit on the PR, checks scope and regressions,
+  and confirms the reproduction for fixes. A new commit or specification
+  change invalidates the verdict.
+- **Independence.** The actor that implemented a change cannot give its QA
+  verdict.
+- **Memory.** Decisions, facts and gotchas go in `.mstack/memory.md`.
 
-The [Skills CLI](https://www.skills.sh/docs/cli) installs skills from GitHub repositories and supports selecting every skill with `--skill '*'`.
+## Adopt in a project
 
-Try prompts like these with your coding agent:
+1. Install all three skills so cross-references resolve to the same version:
 
-> Use mstack-workflow to refine this request. Identify the acceptance criteria and what must be true before implementation can start: [describe the change]
+   ```sh
+   npx skills add mikemajara/mstack --skill '*'
+   ```
 
-> Use mstack-orchestrator to continue the eligible stories in this project through their current workflow phases.
+2. Keep project instructions and checks in the project's `AGENTS.md`.
+3. Choose where stories live: [GitHub Issues](skills/mstack-tracker/references/github.md)
+   (set up labels with `skills/mstack-tracker/scripts/github/setup-labels.mjs`),
+   [Notion](skills/mstack-tracker/references/notion.md), or, when no tracker is
+   selected, the [filesystem](skills/mstack-tracker/references/filesystem.md)
+   under `.mstack/issues/`. Each story has one canonical record; an
+   unavailable tracker never switches storage automatically.
+4. To coordinate agents, add [`.mstack/config.json`](skills/mstack-orchestrator/references/configuration.md).
+   Herdr is the supported runtime; a single agent in the current session also
+   works.
 
-## Work records
+Try prompts like:
 
-Choose [GitHub Issues](skills/mstack-tracker/references/github.md) or [Notion](skills/mstack-tracker/references/notion.md) for story storage; each story has one canonical record, not an editable copy in both. Notion defines a prescribed database schema and uses GitHub separately for PRs, QA and merge confirmation. Its mapping is instruction-only and has not been validated against a live database.
+> Use mstack-workflow to refine this request. Identify the acceptance criteria
+> and what must be true before implementation can start: [describe the change]
 
-When no tracker is selected, the [filesystem tracker](skills/mstack-tracker/references/filesystem.md) stores issues under `.mstack/issues/`. Project memory and optional [configuration](skills/mstack-orchestrator/references/configuration.md) can also live under `.mstack/`. A selected tracker's access failure never switches storage automatically.
+> Use mstack-orchestrator to continue the eligible stories in this project
+> through their current workflow phases.
 
 ## Releases
 
-The three skills are released together at one shared version. Each skill has a `CHANGELOG.md` describing the release and its effect on that skill.
+One shared version across the three skills; each `CHANGELOG.md` describes the
+release and its effect on that skill, including whether it must adapt.
 
 ## Contributing
 
-This repository develops the mstack skills. See [AGENTS.md](AGENTS.md) for contributor guidance and [STRUCTURE.md](docs/STRUCTURE.md) for file ownership.
+See [AGENTS.md](AGENTS.md) for contributor guidance and
+[docs/STRUCTURE.md](docs/STRUCTURE.md) for file ownership.

@@ -1,6 +1,6 @@
 ---
 name: mstack-tracker
-version: 0.1.0
+version: 0.2.0
 description: Read and record work specifications, workflow facts, evidence and relationships through a selected work-record integration.
 ---
 

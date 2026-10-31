@@ -44,7 +44,7 @@ skills/
         refinement.md     # Scope, acceptance criteria and verification brief
         implementation.md # Specified features implemented in code
         qa.md             # Behavioral judgment and rework
-      verification.md     # Shared evidence, tested commits and invalidation
+      verification.md     # Evidence, fix reproduction, scope/regression check, revalidation
       memory.md           # Default read/capture and deliberate promotion
   mstack-orchestrator/
     SKILL.md             # Shared mstack version in frontmatter

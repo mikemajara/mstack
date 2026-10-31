@@ -1,6 +1,6 @@
 ---
 name: mstack-orchestrator
-version: 0.1.0
+version: 0.2.0
 description: Coordinate existing stories through workflow phases by assigning workers, reconciling results and observing run scope and limits. Use when asked to orchestrate stories, including unattended runs.
 ---
 
@@ -67,7 +67,7 @@ runtime. Runtime/harness launch settings apply when starting workers. If this
 actor implements the change, hand QA to a different actor; a lone implementer
 can proceed to the QA handoff but cannot supply its independent verdict.
 
-For mstack 0.1.0, Herdr is the supported execution runtime. Cursor Cloud and
+For mstack 0.2.0, Herdr is the supported execution runtime. Cursor Cloud and
 native Cursor subagents are deferred and unsupported; cmux is not included.
 Agent harness means the client running the agent, such as `agent-cursor`,
 `codex` or `fx`. Model tiers are project-configurable selections within those
@@ -270,7 +270,7 @@ complete. Use workflow and tracker contracts for recorded facts.
 | fx CLI | [Native CLI harness mapping](references/fx.md); use through a supported runtime |
 
 Cursor Cloud and native Cursor subagents have research references, but are not
-supported in mstack 0.1.0. Do not select them for a run. cmux is not part of
+supported in mstack 0.2.0. Do not select them for a run. cmux is not part of
 this release.
 
 Integration helpers, when needed, belong under `scripts/<integration>/` within

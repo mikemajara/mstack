@@ -43,6 +43,10 @@ the project provides no applicable runnable checks, state that explicitly.
 Acceptance criteria still require the independent QA verdict; these
 implementation checks do not replace it.
 
+For a [fix][type:fix] story, record the
+[fix reproduction](../verification.md#fix-reproduction) on the PR before
+requesting QA.
+
 Keep the specification unchanged during implementation. A needed specification
 change returns the story to [refinement][phase:refinement] under
 [specification changes](../lifecycle.md#specification-changes).
@@ -54,6 +58,7 @@ change returns the story to [refinement][phase:refinement] under
 | Does the change stay within the specified scope? | Stories in [implementation][phase:implementation] change only what the specification covers. |
 | Are all the specified features implemented? | Stories in [implementation][phase:implementation] implement every feature the specification describes. The change is that code or configuration. |
 | Is the change available for review and QA? | The implementation is on the story's branch in an open PR that describes the included changes and identifies the implementing actors. The story and PR link to each other, and the acceptance criteria have executable verification scenarios. |
+| For a fix story, is the defect reproduced on base and resolved on head? | [Fix][type:fix] stories record the [fix reproduction](../verification.md#fix-reproduction) on the PR: it fails on the base commit and passes on the head commit, or the PR states why that is impractical and the substitute evidence used. Not applicable to other types. |
 | Did the applicable implementation checks pass? | Run applicable project checks and record commands and outcomes on the PR. They all pass, or the PR explicitly states that no applicable runnable checks are available. A failed or unreported applicable check does not pass this gate. |
 
 ## Valid destinations

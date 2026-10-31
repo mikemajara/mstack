@@ -5,6 +5,11 @@ Current continuity for developing mstack. Repository rules live in
 product behavior in the [draft skills](skills/). Keep only context that helps
 the next development decision.
 
+## QA hardening draft — 2026-10-31
+
+- Draft on local branch `draft/qa-hardening`, not pushed or installed. Adds a fix reproduction (base fails, head passes, or a justified substitute) and one QA scope and regression check, owned in mstack's own wording. Proposed as `0.2.0`; new required gates would be "major" under the bump rules, so the version is open for the user to confirm.
+- Open: how QA drives a running app per project (launch, health check, drive, capture evidence, clean up). A per-project verification adapter is the leading option; nothing is implemented.
+
 ## Notion tracker draft — 2026-10-23
 
 - The user requested and authorized committing a first prescriptive Notion integration alongside GitHub. [Notion](skills/mstack-tracker/references/notion.md) owns its database/data-source target, exact properties, story blocks and operations. Choose one canonical story store; Notion uses GitHub independently for PRs, QA and merge confirmation, not a mirrored GitHub Issue. Existing stories do not migrate automatically.

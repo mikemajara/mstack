@@ -4,6 +4,41 @@ Each entry describes the mstack release across all three skills and its effect
 on orchestrator. The `version` in this skill's frontmatter is the shared mstack
 version.
 
+## 0.2.0
+
+Adds fix-story proof and a combined scope and regression check to QA.
+
+### Stack changes
+
+Bump reason: new required gates change what implementation and QA must record
+before a story can pass, so in-flight stories and existing agents must adapt.
+The project rules treat that as a breaking change; while mstack is pre-1.0 and
+still in draft, it is released as a minor version bump.
+
+- **Workflow:** [Fix][type:fix] stories record a fix reproduction on the PR:
+  scenario, command or steps, and results on the base and head commits, or why
+  a base reproduction is impractical and the substitute evidence used.
+  Implementation gates on recording it; QA reruns it (or judges the
+  substitute) on the tested commit. QA adds one scope and regression check:
+  every diff change traces to the specification, behavior the change could
+  affect outside it is named in proportion to risk and covered by at least the
+  cheapest catching check, and only a demonstrated regression fails.
+  Refinement names behavior to preserve when a change could affect it. A new
+  tested commit reruns both checks.
+- **Orchestrator:** No procedure change. QA workers validate against the
+  updated QA contract; the QA tier default is unchanged. Runtime-support
+  statements now name `0.2.0`; supported runtimes are unchanged.
+- **Tracker:** No schema, label or field change. The fix reproduction and the
+  scope and regression check are recorded on the PR with the existing
+  verdict.
+
+### Impact on orchestrator
+
+- No adaptation needed. Orchestrator already validates worker results against
+  the applicable workflow contract, so the new gates apply through that
+  validation; a QA worker's verdict without them does not pass.
+- Use all three skills at `0.2.0` when coordinating a complete mstack run.
+
 ## 0.1.0
 
 Initial versioned baseline for the three-skill mstack set. There is no earlier

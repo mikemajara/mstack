@@ -102,12 +102,12 @@ actual executable/API operations. Naming a harness does not install it or
 provide an operation mapping. Account access follows the harness's configured
 authentication; a model ID does not transfer subscription access between clients.
 
-For mstack 0.1.0, `execution.delegation` must be `agent`. Native Cursor
+For mstack 0.2.0, `execution.delegation` must be `agent`. Native Cursor
 subagents are deferred and unsupported. The fx mapping covers the `fx ask` CLI
 only; fx subagents are also unsupported.
 
 `execution.runtimeOptions` holds target settings owned by the runtime reference.
-In mstack 0.1.0, supported runtime targets are Herdr's `session` or `machine`
+In mstack 0.2.0, supported runtime targets are Herdr's `session` or `machine`
 options. Resolve these before dispatch; do not pass arbitrary keys as CLI flags
 or mix one runtime's target settings into another's operation.
 When an override changes runtime, replace its `runtimeOptions` with settings

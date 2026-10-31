@@ -1,6 +1,6 @@
 ---
 name: mstack-workflow
-version: 0.1.0
+version: 0.2.0
 description: Define and follow story phases, readiness gates, verification requirements and project memory. Use when researching, refining, implementing or validating stories, or shaping a new story.
 ---
 

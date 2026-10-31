@@ -16,7 +16,9 @@ Stories in [refinement][phase:refinement] request a change in the project that i
 Stories in [refinement][phase:refinement] contain a specification with the goal,
 scope, exclusions, testable acceptance criteria and verification scenarios.
 Record any product or technical constraints that affect implementation or
-judgment in the specification; state when none apply.
+judgment in the specification; state when none apply. When the change
+could affect behavior that must be preserved, name that behavior so QA can
+check it for regressions.
 
 Only this phase changes the specification. A return here invalidates earlier
 QA verdicts under [specification changes](../lifecycle.md#specification-changes).
