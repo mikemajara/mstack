@@ -60,6 +60,10 @@ that skill must adapt. State explicitly when no adaptation is needed; readers
 must not infer compatibility from an omitted change. Keep the three entries at
 the same version and consistent about cross-skill effects.
 
+Also add the release to the root `CHANGELOG.md`, written for agents upgrading a
+project: what's new, what the project must change (or that nothing changes),
+and what happens to stories already in flight.
+
 Distributed skill content should guide its eventual user. Keep authoring
 discussion, review progress and open design questions in `MEMORY.md`, rather
 than in the skill instructions or concrete integration references. Mark draft

@@ -74,8 +74,10 @@ Try prompts like:
 
 ## Releases
 
-One shared version across the three skills; each `CHANGELOG.md` describes the
-release and its effect on that skill, including whether it must adapt.
+One shared version across the three skills. Upgrading a project? Read the
+root [CHANGELOG.md](CHANGELOG.md): what's new, what to change in your project,
+and what happens to stories in flight. Each skill's own `CHANGELOG.md`
+describes the release's effect on that skill, including whether it must adapt.
 
 ## Contributing
 
