@@ -6,15 +6,22 @@ and optional orchestration defaults. Use an optional, gitignored
 Workflow and tracker settings remain shared; the local file changes only how
 work is executed. Tracker owns
 the [issue-selection semantics](../../mstack-tracker/SKILL.md#issue-tracker-selection)
-of the optional `tracker.issues` key (`github` or `filesystem`). If no issue
+of the optional `tracker.issues` key (`github`, `notion` or `filesystem`). If no issue
 tracker is selected, filesystem issues are the default; a configured tracker's
 access failure does not select that fallback. PR hosting remains independent.
 
-Draft: this reference defines configuration semantics, not an executable loader.
-The runtime/harness mappings must supply concrete launch and control operations.
-The durable run-state file format and concurrent controller locking are not
-specified. Project memory lives in `.mstack/memory.md` under
-[workflow memory](../../mstack-workflow/references/memory.md) and project instructions.
+This reference defines configuration semantics for the actor; it does not
+specify an executable loader. Runtime/harness mappings supply concrete launch
+and control operations.
+
+Validation pending: the shared admission contract is defined in the orchestrator
+skill, but no runtime mapping here demonstrates its enforcement. Before unattended use,
+validate that the launcher/scheduler denies concurrent controller admission,
+allows recovery-only admission only after the prior controller has ended, and
+retains admission through reconciliation and checkpointing. mstack specifies
+these behaviors but does not supply the lock itself. Project memory lives in
+`.mstack/memory.md` under [workflow memory](../../mstack-workflow/references/memory.md)
+and project instructions.
 
 ## Resolution and defaults
 
@@ -97,16 +104,21 @@ obtain an explicit migration decision rather than silently removing it from Git.
 Do not write credentials into either configuration file.
 
 Each teammate or checkout may use different execution overrides against the same
-workflow and tracker. This does not add concurrent controller admission or tracker
-locking: the existing single-controller/single-writer limits still apply. The
-local file is per checkout, not per harness session. Two sessions in that checkout
-read the same file; use explicit run instructions for session-specific differences.
+workflow and tracker. This does not add runtime support, concurrent controller
+admission or tracker locking. The shared controller-admission contract and the
+selected tracker's write controls still apply. In particular, local overrides
+do not enable deferred runtimes or subagents. The local file is per checkout,
+not per harness session. Two sessions in that checkout read the same file; use
+explicit run instructions for session-specific differences.
+
 Workers inherit their controller's resolved assignment and limits, rather than
 re-resolving a different local file in their worktree. Retain effective settings
-for resume; editing the file does not silently reconfigure an active run or
-clear a halt. Changes on resume require explicit current-run instructions and
-revalidation before further dispatch; they do not reset the retained start time,
-release an active worker or silently clear a halt.
+during the active controller session; editing the file does not silently
+reconfigure it or clear a halt. A later fresh session resolves configuration
+anew and starts its own elapsed-time limit under the session contract. That
+fresh start does not release an active worker, clear a halt or authorize new
+work before required recovery-only reconciliation. A local file edit is not a
+continuation mechanism for an ended controller.
 
 ## Configuration shape
 
@@ -148,7 +160,12 @@ integration. A filesystem story reference identifies the project and its
 issue number. The example omits `tracker.issues`, so it uses the default unless
 the current request selects a tracker. To select GitHub Issues, add
 `"tracker": { "issues": "github" }` at the top level; no tracker configuration
-file or key is required to use filesystem issues.
+file or key is required to use filesystem issues. To select Notion, use
+`"tracker": { "issues": "notion", "notion": { "databaseId": "NOTION_DATABASE_ID", "dataSourceId": "NOTION_DATA_SOURCE_ID" } }`
+with the actual target IDs, or supply the target explicitly in the current
+request. The [Notion integration](../../mstack-tracker/references/notion.md)
+owns these target fields and the required schema. Select one canonical story
+store; GitHub PR hosting remains independent and no records migrate implicitly.
 
 `execution` selects default runtime and harness. Each role can override
 `runtime`, `harness`, `delegation`, `runtimeOptions` and `tier`. Resolve the role
@@ -159,16 +176,14 @@ actual executable/API operations. Naming a harness does not install it or
 provide an operation mapping. Account access follows the harness's configured
 authentication; a model ID does not transfer subscription access between clients.
 
-`execution.delegation` defaults to `agent`. Set it to `subagent` only for a
-Cursor session with native delegation support; use the
-[subagent mapping](cursor-subagents.md) within that session's actual runtime.
-It does not make a native task a separate hosted agent or change its account.
+For mstack 0.2.0, `execution.delegation` must be `agent`. Native Cursor
+subagents are deferred and unsupported. The fx mapping covers the `fx ask` CLI
+only; fx subagents are also unsupported.
 
-`execution.runtimeOptions` holds target settings owned by the runtime reference:
-[Herdr](herdr.md) may use `session` or `machine`, [Cursor Cloud](cursor-cloud.md)
-uses its `repos` or `env` target, and [cmux](cmux.md) uses `interface` plus a
-`socket` or TUI `session`. Resolve these before dispatch; do not pass arbitrary
-keys as CLI flags or mix one runtime's target settings into another's operation.
+`execution.runtimeOptions` holds target settings owned by the runtime reference.
+In mstack 0.2.0, supported runtime targets are Herdr's `session` or `machine`
+options. Resolve these before dispatch; do not pass arbitrary keys as CLI flags
+or mix one runtime's target settings into another's operation.
 When an override changes runtime, replace its `runtimeOptions` with settings
 for that runtime, or an empty object if none are supplied. Inherit and merge
 runtime options by key only while the runtime remains the same.
@@ -242,14 +257,34 @@ candidate list is exhausted, report the execution hold and resume condition.
 | Setting or signal | Meaning |
 | --- | --- |
 | `run.stories` | Optional ordered series of story references. Dispatch only within that series. If omitted, use the backlog scope requested for this run; omission does not expand that scope. |
-| `run.maxDurationMinutes` | Optional positive elapsed-time admission limit, measured from the retained run start. Resuming the same run does not restart its clock. |
-| `run.onDeadline` | `drain` by default; `halt` requests cancellation of active workers at the deadline and requires runtime support. |
-| Explicit user halt | Immediately closes admission and requests cancellation. The runtime maps the stop signal to its worker control mechanism. |
+| `run.maxDurationMinutes` | Optional positive elapsed-time admission limit for one controller session. Each scheduled session gets its own limit; this setting does not accumulate across sessions. |
+| `run.onDeadline` | `drain` by default; closes new work dispatch at the deadline and lets admitted workers finish. `halt` also requests cancellation of active workers and requires runtime support. |
+| Explicit user halt | Immediately closes new work dispatch and requests cancellation. Keep controller admission until workers are reconciled and the session checkpoint is recorded. The runtime maps the stop signal to its worker control mechanism. |
 
-Configured stop conditions combine: reaching any one closes admission. An empty
-story series has no work. For a series, stop when no further eligible action
-remains within it; retain unfinished stories and their reasons. Workflow
-determines completed, returned and blocked outcomes.
+Controller admission and work dispatch are distinct. The launcher/scheduler
+must prevent concurrent controller sessions. Once the prior controller is
+confirmed ended, a new controller may enter recovery-only mode if a worker is
+active or uncertain: it may inspect records and runtime state, observe or
+cancel that worker, and checkpoint reconciliation facts. It may not dispatch
+replacement work, continue the uncertain worker or release/reassign its claim
+until the worker's outcome is reconciled. Runtime-specific configuration and
+enforcement for this admission behavior are not yet mapped.
+
+There is no universal rolling context or usage threshold; 90% of a five-hour
+window is an example, not a default. A runtime may provide an optional guard
+through its `execution.runtimeOptions`. Its reference must define the measured
+signal, units, window, polling cadence, threshold and stop effect. If a project
+requests a guard that the selected runtime cannot measure or enforce, stop
+before dispatch rather than ignore it. No shared guard field or default
+threshold is defined.
+
+Configured stop conditions combine: reaching any one closes new work dispatch.
+The controller remains active to observe workers and record the session
+checkpoint. If it ends with an active or uncertain worker, a later controller
+may use recovery-only admission as described above. An empty story series has
+no work. For a series, stop when no further eligible action remains within it;
+retain unfinished stories and their reasons. Workflow determines completed,
+returned and blocked outcomes.
 
 An omitted duration means no elapsed-time limit. Other run controls still
 apply. Completion of the requested work, an explicit halt or any

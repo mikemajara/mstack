@@ -1,20 +1,78 @@
 # mstack
 
-A harness-neutral delivery stack for small software projects, currently being
-developed as three draft skills:
+mstack helps people and coding agents move software work from a request to a
+merged, verified change. Each phase states what must be true before work
+enters it and what must be shown before it leaves.
 
-- [mstack-workflow](skills/mstack-workflow/SKILL.md) holds the rules: phases, gates, transitions and memory.
-- [mstack-orchestrator](skills/mstack-orchestrator/SKILL.md) coordinates stories through those phases.
-- [mstack-tracker](skills/mstack-tracker/SKILL.md) performs record operations, with filesystem and GitHub integrations.
+**Status:** draft skills, version 0.2.0. Live runtime and Notion behavior are
+not yet validated; see each skill's `CHANGELOG.md` for known limits.
 
-These skills guide behavior; access is controlled by the environment the actor
-runs in. Workflow can guide an actor directly without the other skills. Tracker
-and orchestrator follow workflow; orchestrator uses tracker for record
-operations. Local issue storage removes the need for a hosted issue tracker;
-delivery still requires a PR and independent QA. By default, orchestrator
-works on existing stories and stops after passing QA to propose merge.
+![The mstack workflow, tracker and orchestrator abstractions](docs/mstack-architecture.jpeg)
 
-Target projects use this layout; directories and files are created as needed:
+## Why
+
+Agents can write code quickly but often stop at "it looks done". mstack makes
+"done" a checkable claim: a story is delivered only when an independent QA
+actor has evidence that each acceptance criterion holds on a specific commit,
+and the change is merged.
+
+## How it fits together
+
+Three skills, released together at one version:
+
+| Skill | Owns | Use alone? |
+| --- | --- | --- |
+| [mstack-workflow](skills/mstack-workflow/SKILL.md) | Phases, gates, transitions, verification, project memory | Yes |
+| [mstack-tracker](skills/mstack-tracker/SKILL.md) | Where stories live and how their state is recorded | With workflow |
+| [mstack-orchestrator](skills/mstack-orchestrator/SKILL.md) | Which agent runs which phase, where and when | With both |
+
+Workflow is the rulebook. Tracker and orchestrator follow its contracts; they
+never relax a gate.
+
+## Approach
+
+- **Phases.** Research establishes facts, refinement writes the scope and
+  acceptance criteria, implementation produces a reviewable PR, and QA judges
+  it. Code defects return to implementation; specification holes return to
+  refinement.
+- **Gates.** Each phase ends with required questions and pass conditions.
+  Unknown is not a pass.
+- **Evidence.** Every acceptance criterion maps to scenarios. QA records the
+  results, evidence and tested commit on the PR, checks scope and regressions,
+  and confirms the reproduction for fixes. A new commit or specification
+  change invalidates the verdict.
+- **Independence.** The actor that implemented a change cannot give its QA
+  verdict.
+- **Memory.** Decisions, facts and gotchas go in `.mstack/memory.md`.
+
+## Adopt in a project
+
+1. Install all three skills so cross-references resolve to the same version:
+
+   ```sh
+   npx skills add mikemajara/mstack --skill '*'
+   ```
+
+2. Keep project instructions and checks in the project's `AGENTS.md`.
+3. Choose where stories live: [GitHub Issues](skills/mstack-tracker/references/github.md)
+   (set up labels with `skills/mstack-tracker/scripts/github/setup-labels.mjs`),
+   [Notion](skills/mstack-tracker/references/notion.md), or, when no tracker is
+   selected, the [filesystem](skills/mstack-tracker/references/filesystem.md)
+   under `.mstack/issues/`. Each story has one canonical record; an
+   unavailable tracker never switches storage automatically.
+4. To coordinate agents, add [`.mstack/config.json`](skills/mstack-orchestrator/references/configuration.md).
+   Herdr is the supported runtime; a single agent in the current session also
+   works.
+5. Optionally put personal execution preferences in gitignored
+   `.mstack/config.local.json`. Workflow and tracker settings stay shared.
+   Orchestration precedence is explicit run instructions, local overrides,
+   shared configuration, then skill defaults. Add `/.mstack/config.local.json`
+   to the project's root `.gitignore`, not the whole `.mstack/` directory.
+   See [configuration](skills/mstack-orchestrator/references/configuration.md#local-override-boundary)
+   for permitted settings and merge rules. Local overrides do not enable
+   concurrent controllers or add runtime support.
+
+Target projects use this layout; create files only as needed:
 
 ```text
 .mstack/
@@ -24,34 +82,22 @@ Target projects use this layout; directories and files are created as needed:
   issues/            # Local stories when no issue tracker is selected
 ```
 
-Workflow and tracker settings stay shared. For orchestration, explicit run
-instructions take precedence over local overrides, shared settings and skill
-defaults, in that order. See [configuration](skills/mstack-orchestrator/references/configuration.md)
-for permitted local settings and merge rules. Target projects should ignore only
-`/.mstack/config.local.json`, not the whole `.mstack/` directory. Local overrides
-do not enable concurrent controllers; admission/locking remains unspecified.
+Try prompts like:
 
-The [filesystem tracker](skills/mstack-tracker/references/filesystem.md) stores issues
-in `.mstack/issues/` with YAML frontmatter and a Markdown body. It applies only
-when no issue tracker is selected (or filesystem is explicitly selected), not
-when a configured tracker is unavailable.
+> Use mstack-workflow to refine this request. Identify the acceptance criteria
+> and what must be true before implementation can start: [describe the change]
 
-To work on this repository, follow [AGENTS.md](AGENTS.md). The skill files are
-the product under development, not automatically this repository's operating
-instructions. [STRUCTURE.md](docs/STRUCTURE.md) maps ownership and files;
-[MEMORY.md](MEMORY.md) holds the current review context and open questions.
-[CHANGELOG.md](CHANGELOG.md) records meaningful behavior changes.
+> Use mstack-orchestrator to continue the eligible stories in this project
+> through their current workflow phases.
 
-Start reviewing the workflow with its [lifecycle](skills/mstack-workflow/references/lifecycle.md)
-and [phase references](skills/mstack-workflow/references/phases/). Incomplete contracts
-are marked in place. The target first release is `0.0.1`. Gate review,
-packaging checks and a supervised story walkthrough remain before release;
-these drafts are not ready for installation.
+## Releases
 
-`legacy/backlog/` is frozen historical source material from
-[mikemajara/skills](https://github.com/mikemajara/skills/tree/2ba433139fc2e102ad2f231de2c2d79f6ea12a06/skills/backlog),
-retained for comparison while developing the new skills. It is not a maintained
-implementation of mstack. Import history is preserved in Git, including
-`backlog-import-pr10`, `feature-workflow-import` and
-`feature-workflow-claude-import`; extraction details remain in this repository's
-file history.
+One shared version across the three skills. Upgrading a project? Read the
+root [CHANGELOG.md](CHANGELOG.md): what's new, what to change in your project,
+and what happens to stories in flight. Each skill's own `CHANGELOG.md`
+describes the release's effect on that skill, including whether it must adapt.
+
+## Contributing
+
+See [AGENTS.md](AGENTS.md) for contributor guidance and
+[docs/STRUCTURE.md](docs/STRUCTURE.md) for file ownership.

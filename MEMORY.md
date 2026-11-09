@@ -5,20 +5,58 @@ Current continuity for developing mstack. Repository rules live in
 product behavior in the [draft skills](skills/). Keep only context that helps
 the next development decision.
 
-## Current review — 2026-10-18
+## QA hardening draft — 2026-10-31
 
+- Draft on local branch `draft/qa-hardening`, not pushed or installed. Adds a fix reproduction (base fails, head passes, or a justified substitute) and one QA scope and regression check, owned in mstack's own wording. Proposed as `0.2.0`; new required gates would be "major" under the bump rules, so the version is open for the user to confirm.
+- Open: how QA drives a running app per project (launch, health check, drive, capture evidence, clean up). A per-project verification adapter is the leading option; nothing is implemented.
+
+## Notion tracker draft — 2026-10-23
+
+- The user requested and authorized committing a first prescriptive Notion integration alongside GitHub. [Notion](skills/mstack-tracker/references/notion.md) owns its database/data-source target, exact properties, story blocks and operations. Choose one canonical story store; Notion uses GitHub independently for PRs, QA and merge confirmation, not a mirrored GitHub Issue. Existing stories do not migrate automatically.
+- This is an addition to the unreleased `0.1.0` draft baseline, not a new release or installation. No live Notion access was available; no database was created or inspected. The reference marks provisioning, permissions, pagination and concurrent-writer behavior as unvalidated. Connector-specific operation support and a user-reviewed live database trial remain follow-up work. No private workplace page URL or workspace configuration is distributed.
+
+## Current review — 2026-10-19
+
+- Versioning decisions are recorded in [AGENTS.md](AGENTS.md#versioning-and-release-notes):
+  one shared mstack version across the three skills, starting at `0.1.0`, with
+  a version field in each skill frontmatter and an individual changelog per
+  skill. Every release entry summarizes all skill changes and states their
+  impact/adaptation requirement for that skill, including explicit no-change
+  entries. The authoring session has added the initial version fields and
+  `0.1.0` baseline changelogs; no public release has been made. Users can
+  install the skill set from GitHub with the third-party Skills CLI:
+  `npx skills add mikemajara/mstack --skill '*'`. mstack does not bundle an
+  installer, and does not install Herdr, fx or other external runtime products.
+- The user settled the autonomous-session boundary: each controller session
+  should close with a durable checkpoint, and a later session should start fresh
+  from GitHub or local project records. Do not rely on open runtime panes or
+  assume workers retain current context across autonomous runs. Checkpoint
+  contents are defined as reconciliation of canonical records, not a separate
+  state store. If worker termination or outcome is uncertain, retain ownership
+  and record the reconciliation condition; do not dispatch replacement work
+  before reconciliation. Once the prior controller is confirmed ended, a fresh
+  controller may take exclusive controller admission in recovery-only mode to
+  inspect and reconcile, without dispatching or changing claims. Runtime-specific
+  detection and confirmation, cleanup details and runtime limit monitoring
+  remain open. The temporary [review queue](docs/DRAFT-REVIEW.md) records
+  settled behavior and remaining runtime/filesystem validation items.
 - Autonomous jobs in the old backlog have been observed stopping after reporting
   a next step despite its continuation instructions. The user requires explicit
   continuation in mstack and expects iterations with runtime trials; stronger
   wording alone is not evidence that the behavior is fixed. The orchestrator's
-  [continuation contract](skills/mstack-orchestrator/SKILL.md#autonomous-continuation)
+  [continuation contract](skills/mstack-orchestrator/SKILL.md#autonomous-sessions)
   now requires repeating dispatch, checking other eligible stories after a hold,
-  and accounting for continuation before ending an invocation. No live trial
-  has been performed. Future trials should exercise phase handoffs, worker
-  completion/waits and changing stories, checking actual dispatch rather than
-  accepting a reported next step as continuation.
-- The reviewed cleanup targets `0.0.1`. The three skill
-  roots and names are now `mstack-workflow`, `mstack-orchestrator` and
+  and accounting for continuation before ending an invocation. Future trials
+  should exercise phase handoffs, worker
+  completion/waits and a blocked story alongside other eligible work, checking
+  actual dispatch rather than accepting a reported next step as continuation.
+  Trials should also trigger a configured, controlled runtime stop or
+  pre-limit guard, verify worker reconciliation and checkpointing before the
+  controller ends, then confirm a later invocation makes a fresh decision from
+  those records. This does not assume cleanup after an abrupt hard limit. No
+  live trial has been run.
+- The reviewed cleanup targets the shared `0.1.0` baseline. The three skill
+  roots and names are `mstack-workflow`, `mstack-orchestrator` and
   `mstack-tracker`; [STRUCTURE.md](docs/STRUCTURE.md) maps their files. Workflow
   can guide an actor directly; tracker supplies storage operations and
   orchestrator coordinates runs. Neither supplies environment access.
@@ -35,8 +73,13 @@ the next development decision.
   no issue tracker is selected. Workflow states the fallback; tracker owns
   selection and operations, with the optional selector cross-referenced from
   project configuration. This is a contract/template pass, with no local CLI,
-  installation or activation. Single-writer operation in an authoritative
-  checkout is the initial limit; concurrent worktree writes remain unsupported.
+  installation or activation. Filesystem mutations use an environment-provided
+  short-lived lock scoped to the issue file being changed; workers return
+  proposed updates for reconciliation by the controller. The lock releases
+  after the confirmed write and must not remain stuck after a crash. There is
+  no project/session-wide tracker lock; live concurrent-writer and crash
+  recovery validation remains open, and any stricter policy should follow
+  evidence from actual conflicts.
 - Legacy plans, setup/status, dedupe, queue and snapshot behavior were reviewed
   for that pass. Specification sections and local inspection were adapted;
   draft promotion states, snapshots, readiness heuristics and unrelated
@@ -45,10 +88,10 @@ the next development decision.
   workflow. Local checks exercised the populated YAML template and
   documented search commands, including closed files under a hidden, ignored
   directory. No live target-project trial has been performed.
-- [Research](skills/mstack-workflow/references/phases/research.md) now explicitly includes
-  feasibility questions and possible changes. Its two required gate questions
-  still have draft wording. All four phase references now mark their gate
-  wording as draft; the cleanup did not settle the remaining gate design.
+- [Research](skills/mstack-workflow/references/phases/research.md) explicitly includes
+  feasibility questions and possible changes. Research, refinement,
+  implementation and QA gates have been reviewed and are recorded in their
+  phase contracts. Lifecycle defines their transitions and blocked-work rules.
 - Version-control and PR conventions now live in
   [implementation](skills/mstack-workflow/references/phases/implementation.md), and
   evidence placement in [QA](skills/mstack-workflow/references/phases/qa.md).
@@ -65,12 +108,16 @@ the next development decision.
   independently, using direct `gh` commands and a bundled label helper under
   `skills/mstack-tracker/scripts/github/`. The legacy scripts were reviewed as source;
   their scaffolding, readiness heuristics and orchestration behavior were not
-  imported. Label migration and cache/export remain outside this pass.
+  imported. Automatic legacy-label migration, offline cache/export tooling and
+  GitHub Projects fields remain deliberate exclusions. Existing-record
+  migration requires an explicit decision; exports never replace a current
+  remote read.
 - GitHub's reference was tightened to link to workflow's phase, evidence and
   completion requirements rather than repeat them. The first draft's extra
-  snapshot/digest and verdict-history requirements were removed; the detailed
-  evidence format remains an open workflow question. GitHub-specific storage,
-  story identity and operation confirmation remain in the adapter.
+  snapshot/digest and verdict-history requirements were removed. The evidence
+  record layout remains project-owned under the Verification contract.
+  GitHub-specific storage, story identity and operation confirmation remain in
+  the adapter.
 - The label helper reads its bundled manifest without depending on an installed
   sibling workflow path. Its names were checked against workflow's vocabulary.
   Local checks used a temporary fake `gh` for preview/apply, repeat runs,
@@ -89,52 +136,64 @@ the next development decision.
   The earlier separate model-file proposal was rejected as unnecessary. These
   are instructions and configuration semantics, not an executable controller or
   configuration loader.
-- The user's runtime examples are Herdr, Cursor Cloud and cmux; agent harness
-  examples are `agent-cursor`, `codex` and `fx`. Cursor also needs native
-  subagent operation mappings. They use Cursor for Grok/Composer and Codex
-  subscription access for OpenAI models; do not assume interchangeable account
-  routes. Model IDs are deliberately project choices. Additional harness
-  mappings remain pending.
+- mstack 0.1.0 supports Herdr as the runtime and documents Codex, Cursor CLI
+  and fx CLI harness mappings. Cursor Cloud and native Cursor subagents are
+  deferred and unsupported; cmux is removed from the release scope. Do not
+  assume interchangeable account routes. Model IDs are project choices.
 - [Herdr](skills/mstack-orchestrator/references/herdr.md) has an initial operation
-  mapping checked against official documentation. The legacy four-window
-  policy, environment-only launch prerequisite and fixed model choices were
-  not imported. Its incomplete launch-argument and confirmed-cancellation
-  mappings are marked in place. No runtime was launched or configured.
-- The user deferred quota observation. Current run controls cover story scope,
-  elapsed time and explicit halt; subscription monitoring and quota-based stop
-  settings were removed from the orchestrator draft.
-- [Cursor Cloud](skills/mstack-orchestrator/references/cursor-cloud.md),
-  [native subagents](skills/mstack-orchestrator/references/cursor-subagents.md) and
-  [cmux](skills/mstack-orchestrator/references/cmux.md) now have documentation mappings.
-  cmux has separate macOS and TUI sections because their CLI grammars differ;
-  its installed interface is not known in this workspace. Cursor Cloud's
-  follow-up request has no documented model override, so the mapping uses a
-  new agent on the intended branch/PR when changing models. Runtime-specific
-  target settings and native delegation selection are described in the shared
-  configuration reference. No live runtime validation has been performed.
+  mapping checked against official documentation. The current official docs
+  support the documented CLI launch, prompt and wait operations. Herdr does not
+  provide project-level controller admission, and `ctrl+c` does not prove
+  process-tree termination. The integration remains conditional on external
+  exclusivity and defaults to `drain`; no live runtime trial was performed.
+- The [fx CLI mapping](skills/mstack-orchestrator/references/fx.md) now covers
+  `fx ask` as a harness only, requiring an execution runtime that can launch and
+  observe it. Its command flags and structured result/exit handling were
+  checked against the official fx documentation. Native fx subagents are
+  deferred. No live runtime or cancellation trial has been performed.
+- The suggested 90% of a five-hour window is not a universal policy. The
+  working v1 rule permits optional runtime-specific guards only when the adapter
+  defines signal, units, window, polling cadence, threshold and stop effect.
+  Unsupported requested guards block dispatch; live runtime validation remains
+  future work.
+- Cursor Cloud and native Cursor subagent references are retained for possible
+  later work, but neither is selectable in mstack 0.1.0. cmux support was
+  removed because there is no near-term plan to implement it. A low-priority,
+  not-ready backlog story can be created if cmux is prioritized later.
 - Legacy remains frozen historical source material; removal is a separate
   change, so its repository guidance and source pointers remain. The cleanup
   deliberately does not port scaling by story type, legacy hardening prompts,
-  implementation self-check prompts before QA, additional PR hygiene rules,
+  additional PR hygiene rules,
   catch-up briefs or legacy label migration. These are deferred rather than
   silently required; the current branch/PR/link contracts still apply. Review
   needed source material before any eventual removal.
 
 ## Open design questions
 
-- Exact phase gate questions and pass conditions, starting with research and
-  refinement.
-- Detailed evidence format and the extent of scenario reruns needed after a
-  tested commit changes; the requirement to revalidate is already defined.
-- Durable orchestrator run-state format, concurrent controller admission/locking,
-  control-signal transport.
-- Verified harness launch/readiness arguments, native subagent cancellation and
-  confirmed process cancellation/descendant handling for terminal runtimes.
+- Runtime-specific enforcement of the shared controller-admission protocol
+  (exclusive admission, recovery-only takeover after the prior controller ends,
+  and release after checkpointing); live validation of runtime-specific usage
+  guards; and control-signal transport. Filesystem tracker uses a separate
+  short-lived per-file lock for writes; it does not replace controller
+  admission.
+  `maxDurationMinutes` is per session and does not accumulate across scheduled
+  sessions.
 - Cross-cutting data-migration requirements.
-- Packaging and installed reference resolution: namespaced directory names
-  alone do not establish that an installer preserves the sibling layout.
+- **Reliability evaluation story:** Create a follow-up story for supervised
+  Herdr runs that evaluates autonomous continuation, worker reconciliation,
+  session checkpoints and fresh-session decisions. Retain logs/evidence and
+  decide the reliability pass criteria in that story; no live trial has run.
+- **Project setup and feedback intake:** The Skills CLI install path is
+  confirmed, but target-project setup remains undecided: whether first use
+  should check for `.mstack/` and ask before creating it, use a separate setup
+  skill/repo, or another entry point. Separately consider a thin feedback skill
+  that can file bug reports and feature requests at
+  https://github.com/mikemajara/mstack. These are options, not decided behavior.
+- Distribution must preserve the three same-version sibling skill directories
+  and relative paths. The third-party Skills CLI supports installing all skills
+  from the repository; mstack itself does not bundle an installer.
 
-Tracker and orchestrator integration procedures are drafted with marked limitations; runtime
-integration, packaging and a supervised real-project trial remain future work.
-Local helper validation does not establish that the integrations have been
-exercised against live repositories or runtimes.
+Tracker and orchestrator procedures include documented limits. Autonomous
+session reliability, filesystem lock behavior, and project setup/feedback intake
+remain follow-up work; local document checks do not establish live runtime
+behavior.

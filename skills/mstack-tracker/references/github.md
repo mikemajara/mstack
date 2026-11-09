@@ -11,8 +11,13 @@ Workflow owns phase prerequisites, required content, validation and completion.
 This reference maps those records and operations to GitHub. Read the linked
 workflow contract for requirements; the command examples do not establish gates.
 
-Draft: automatic migration of legacy labels and a cache/export procedure are
-not provided. GitHub Projects fields are not mapped here.
+This integration does not automatically migrate legacy labels or maintain an
+offline cache/export. Legacy phase labels such as `phase:refine` and
+`phase:implement` require an explicit migration decision; changing tracker
+selection applies to new stories and does not migrate existing records. Any
+export used outside this integration must be marked with its source, time and
+coverage and does not substitute for a current GitHub read. GitHub Projects
+fields are outside this Issues/PR mapping.
 
 ## Availability and target
 
