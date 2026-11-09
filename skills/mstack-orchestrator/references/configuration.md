@@ -1,7 +1,10 @@
 # Project configuration
 
-Use one `.mstack/config.json` at the target project root for runtime, harness,
-models, role overrides, run controls and issue-tracker selection. Tracker owns
+Use `.mstack/config.json` at the target project root for shared project settings
+and optional orchestration defaults. Use an optional, gitignored
+`.mstack/config.local.json` in the same root for personal orchestration overrides.
+Workflow and tracker settings remain shared; the local file changes only how
+work is executed. Tracker owns
 the [issue-selection semantics](../../mstack-tracker/SKILL.md#issue-tracker-selection)
 of the optional `tracker.issues` key (`github` or `filesystem`). If no issue
 tracker is selected, filesystem issues are the default; a configured tracker's
@@ -15,12 +18,32 @@ specified. Project memory lives in `.mstack/memory.md` under
 
 ## Resolution and defaults
 
-Resolve explicit current-run instructions over project configuration, then use
-the defaults below for omitted settings. Merge objects by key; a supplied
-model-candidate array replaces that array rather than appending inherited
-candidates. Empty arrays disable that selection. Malformed configuration and
-unknown selections need correction; they are not missing values eligible for
-implicit defaults. Retain the effective settings used for the run.
+For orchestration settings, resolve these layers from highest to lowest priority:
+
+1. Explicit current-run instructions.
+2. `.mstack/config.local.json`, when present.
+3. Shared `.mstack/config.json`, when present.
+4. Skill defaults below.
+
+Merge configuration objects by key before resolving role overrides over
+`execution`. A local `execution` value replaces the shared value at the same
+path, but does not remove explicit shared `roles` settings; override the relevant
+role locally when needed. A supplied array replaces the inherited array rather
+than appending to it, including model candidates and `run.stories`. Empty arrays
+disable that selection. Apply the runtime-option replacement rule below whenever
+an overlay changes runtime; do not carry another runtime's options forward.
+
+Both files are optional. A missing local file or an empty local object changes
+nothing; a local file can supply execution settings without a shared file. An
+unreadable file, malformed JSON, a non-object root (including `null`), invalid
+values or unknown selections need correction before dispatch; do not treat them
+as absence or silently fall back. Validate each supplied layer even when a
+higher-priority layer replaces its values. Structural errors and unknown
+configuration keys are fatal configuration problems; a well-formed model
+candidate that is unavailable through the selected runtime/harness follows the
+configured fallback procedure, not this validation failure rule. Retain the
+effective settings and their sources for the run; do not copy local values back
+into shared configuration.
 
 | Setting | Skill default |
 | --- | --- |
@@ -38,6 +61,52 @@ need not occupy the same tier in different projects or harnesses. Runtime
 references do not redefine the role defaults. An orchestrator tier applies
 when launching the controller too; an existing session cannot be assumed to
 support changing its own model.
+
+## Local override boundary
+
+Accept only these top-level sections in `.mstack/config.local.json`:
+
+| Section | Permitted local settings |
+| --- | --- |
+| `execution` | `runtime`, `harness`, `delegation`, `runtimeOptions` |
+| `roles` | The defined workflow roles and `orchestrator`, each with `runtime`, `harness`, `delegation`, `runtimeOptions`, `tier` |
+| `models` | Harness-specific tier mappings and model candidates under the model-selection contract below |
+| `run` | `stories`, `maxDurationMinutes`, `onDeadline`, within the requested scope |
+
+Reject other sections or unsupported keys with their configuration path and
+reason. In particular, `tracker` and `workflow` are not local overrides, even
+when they repeat shared values. Runtime options and model options must be
+understood by the selected integration/harness, not interpreted as arbitrary
+commands. Local settings cannot change the system of record, workflow gates,
+verification requirements, role authority or project instructions. A run setting
+cannot grant permission to create stories, merge or close them, or expand the
+current request's scope. Tracker's explicit-request selection rules are unchanged.
+
+Keep the local file out of version control. In the target project's root
+`.gitignore`, add the exact rule (preserving existing rules):
+
+```gitignore
+/.mstack/config.local.json
+```
+
+Do not ignore the whole `.mstack/` directory: shared configuration, memory and
+filesystem issues still belong to the project. Verify the local path is ignored
+and not tracked before writing personal settings; an ignore rule does not
+untrack an existing file. If it is already tracked, report that condition and
+obtain an explicit migration decision rather than silently removing it from Git.
+Do not write credentials into either configuration file.
+
+Each teammate or checkout may use different execution overrides against the same
+workflow and tracker. This does not add concurrent controller admission or tracker
+locking: the existing single-controller/single-writer limits still apply. The
+local file is per checkout, not per harness session. Two sessions in that checkout
+read the same file; use explicit run instructions for session-specific differences.
+Workers inherit their controller's resolved assignment and limits, rather than
+re-resolving a different local file in their worktree. Retain effective settings
+for resume; editing the file does not silently reconfigure an active run or
+clear a halt. Changes on resume require explicit current-run instructions and
+revalidation before further dispatch; they do not reset the retained start time,
+release an active worker or silently clear a halt.
 
 ## Configuration shape
 
@@ -103,6 +172,33 @@ keys as CLI flags or mix one runtime's target settings into another's operation.
 When an override changes runtime, replace its `runtimeOptions` with settings
 for that runtime, or an empty object if none are supplied. Inherit and merge
 runtime options by key only while the runtime remains the same.
+
+### Local override example
+
+With the shared example above, this `.mstack/config.local.json` keeps its runtime,
+role harness choices, tracker selection and other tiers, but replaces the Codex
+high-tier candidates and the run's duration:
+
+```json
+{
+  "models": {
+    "codex": {
+      "high": ["LOCAL_PREMIUM_MODEL_ID"]
+    }
+  },
+  "run": {
+    "maxDurationMinutes": 45
+  }
+}
+```
+
+The effective high-tier list contains only `LOCAL_PREMIUM_MODEL_ID`, not the
+shared candidates. An explicit run instruction setting the duration to 15 minutes
+wins over the local 45 and shared 120. The shared story series is retained unless
+explicitly replaced within the requested scope. The model ID is a placeholder;
+validate it through the selected harness before launch. To change runtime or
+harness locally, use the same `execution`/`roles` shape as shared configuration
+and supply compatible options and model mappings.
 
 ## Model selection and fallbacks
 

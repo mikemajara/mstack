@@ -37,8 +37,10 @@ limitations.
 ## Project layout and issue tracking
 
 Project memory lives in `.mstack/memory.md`. Optional `.mstack/config.json`
-holds project settings; execution settings are needed only when coordinating
-workers. Local stories use `.mstack/issues/` under the selection rules below.
+holds shared project settings; execution settings are needed only when coordinating
+workers. Orchestrator's optional, gitignored `.mstack/config.local.json` overrides
+execution choices only, not shared workflow rules or tracker selection. Local
+stories use `.mstack/issues/` under the selection rules below.
 
 > **Use filesystem issues only when no issue tracker is selected. A configured
 > tracker being unavailable does not activate this fallback.**

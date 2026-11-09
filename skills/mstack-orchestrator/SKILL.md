@@ -28,12 +28,14 @@ mechanics; configuration does not change workflow requirements.
 
 ## Project configuration
 
-Read [configuration](references/configuration.md) and the target project's
-`.mstack/config.json` when present before dispatch. Resolve role, story scope
-and run limits; for worker launches, also resolve runtime, agent harness,
-model tier and configured model candidates. Explicit run
-instructions override project settings; project settings override skill
-defaults. Configuration supplies execution choices within the requested scope.
+Read [configuration](references/configuration.md), the target project's shared
+`.mstack/config.json` and gitignored `.mstack/config.local.json` when present
+before dispatch. For orchestration settings, explicit run instructions override
+local settings, then shared settings, then skill defaults. Reject unsupported
+local keys; workflow and tracker settings are not local overrides. Resolve role,
+story scope and run limits; for worker launches, also resolve runtime, agent
+harness, model tier and configured model candidates. Configuration supplies
+execution choices within the requested scope, not authority to change it.
 
 When launching workers, select configured models automatically, including
 unattended runs.

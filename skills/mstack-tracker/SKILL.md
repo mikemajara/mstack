@@ -57,8 +57,10 @@ For example, an existing configuration can select GitHub Issues with:
 The explicit `filesystem` value selects the same integration as the default.
 These are configuration semantics, not an executable loader. See the shared
 [configuration reference](../mstack-orchestrator/references/configuration.md)
-for execution settings when using orchestrator. Tracker selection does not
-require a runtime or an orchestrator run.
+for execution settings when using orchestrator. Its gitignored local override
+is execution-only: `tracker` is not permitted there and cannot select a different
+system of record. Tracker selection does not require a runtime, a local execution
+file or an orchestrator run.
 
 A GitHub remote or available `gh` does not select GitHub Issues. PR hosting is
 selected independently through project settings or the current request; the

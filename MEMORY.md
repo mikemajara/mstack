@@ -81,10 +81,14 @@ the next development decision.
   parity passed. No remote labels were read or changed in the cleanup.
 - [Orchestrator](skills/mstack-orchestrator/SKILL.md) now drafts the common execution
   contract and run procedure. [Configuration](skills/mstack-orchestrator/references/configuration.md)
-  defines project runtime/harness/model choices, role defaults, configured
-  fallbacks and run controls in one `.mstack/config.json`; the earlier separate
-  model-file proposal was rejected as unnecessary. These are instructions and
-  configuration semantics, not an executable controller or configuration loader.
+  defines shared runtime/harness/model defaults, role defaults, configured
+  fallbacks and run controls in `.mstack/config.json`, with personal execution
+  overrides in gitignored `.mstack/config.local.json`. Explicit run instructions
+  win over local, shared and skill defaults, in that order. Workflow and tracker
+  remain shared; local execution preferences do not enable concurrent controllers.
+  The earlier separate model-file proposal was rejected as unnecessary. These
+  are instructions and configuration semantics, not an executable controller or
+  configuration loader.
 - The user's runtime examples are Herdr, Cursor Cloud and cmux; agent harness
   examples are `agent-cursor`, `codex` and `fx`. Cursor also needs native
   subagent operation mappings. They use Cursor for Grok/Composer and Codex

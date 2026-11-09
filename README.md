@@ -18,10 +18,18 @@ Target projects use this layout; directories and files are created as needed:
 
 ```text
 .mstack/
-  memory.md    # Project continuity
-  config.json  # Optional project settings
-  issues/      # Local stories when no issue tracker is selected
+  memory.md          # Shared project continuity
+  config.json        # Optional shared settings and orchestration defaults
+  config.local.json  # Optional personal execution overrides; gitignored
+  issues/            # Local stories when no issue tracker is selected
 ```
+
+Workflow and tracker settings stay shared. For orchestration, explicit run
+instructions take precedence over local overrides, shared settings and skill
+defaults, in that order. See [configuration](skills/mstack-orchestrator/references/configuration.md)
+for permitted local settings and merge rules. Target projects should ignore only
+`/.mstack/config.local.json`, not the whole `.mstack/` directory. Local overrides
+do not enable concurrent controllers; admission/locking remains unspecified.
 
 The [filesystem tracker](skills/mstack-tracker/references/filesystem.md) stores issues
 in `.mstack/issues/` with YAML frontmatter and a Markdown body. It applies only
@@ -32,6 +40,7 @@ To work on this repository, follow [AGENTS.md](AGENTS.md). The skill files are
 the product under development, not automatically this repository's operating
 instructions. [STRUCTURE.md](docs/STRUCTURE.md) maps ownership and files;
 [MEMORY.md](MEMORY.md) holds the current review context and open questions.
+[CHANGELOG.md](CHANGELOG.md) records meaningful behavior changes.
 
 Start reviewing the workflow with its [lifecycle](skills/mstack-workflow/references/lifecycle.md)
 and [phase references](skills/mstack-workflow/references/phases/). Incomplete contracts

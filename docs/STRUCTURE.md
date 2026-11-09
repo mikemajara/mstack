@@ -13,6 +13,7 @@ place. Maintain behavior in the owning skill and use this document as a map.
 | --- | --- |
 | `AGENTS.md` | Instructions for developing mstack itself |
 | `README.md` | Project entry point and source pointer |
+| `CHANGELOG.md` | Meaningful behavior changes and migrations |
 | `MEMORY.md` | Current review context and unresolved design questions |
 | `docs/STRUCTURE.md` | File and responsibility map |
 | `skills/` | Draft product instructions and references |
@@ -48,7 +49,7 @@ skills/
   mstack-orchestrator/
     SKILL.md
     references/
-      configuration.md    # .mstack/config.json, execution settings and tracker selector
+      configuration.md    # Shared config, local execution overrides and tracker selector
       herdr.md            # Herdr operation mapping and capability limitations
       cursor-cloud.md     # Cursor Cloud API agent/run mapping
       cursor-subagents.md # Native Cursor session delegation
