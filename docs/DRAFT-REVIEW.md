@@ -137,6 +137,13 @@ product decision only if the evidence exposes an actual contract gap.
 
 ### Validation items
 
+0. [OpenBot integration](../skills/mstack-orchestrator/references/openbot.md) —
+   unreleased project-channel mapping. Validate with mstack itself: PM lead,
+   role/model bindings, independent QA, asynchronous continuation, workspace
+   resource controls, exclusive admission and stop/recovery outcomes. Tool-schema
+   inspection is not live validation. Channel creation and skill activation are
+   separate setup work; channel lead selection alone proves no exclusivity.
+
 1. [Autonomous session behavior](../skills/mstack-orchestrator/SKILL.md) —
    run supervised runtime trials that meet the observable pass criteria in the
    skill: actual dispatch after phase handoff, worker wait and a blocked story

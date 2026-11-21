@@ -9,6 +9,10 @@ detailed cross-skill contract changes.
 
 ### What's new
 
+- Unreleased OpenBot runtime mapping: one project channel, PM lead and agent
+  workers, with environment discovery, role/model setup, asynchronous handoffs,
+  resource coordination and explicit admission/cancellation limitations.
+
 - Optional, gitignored `.mstack/config.local.json` for personal orchestration
   settings. Explicit run instructions take precedence over local overrides,
   shared configuration and skill defaults, in that order.
@@ -41,9 +45,12 @@ detailed cross-skill contract changes.
   explicit reconciliation under the session contract.
 
 These are skill configuration semantics, not an executable configuration loader.
-Runtime support is unchanged; local overrides do not enable deferred runtimes,
-subagents or concurrent controllers. The shared skill version remains `0.2.0`
-pending a release decision.
+Local overrides do not enable deferred runtimes, subagents or concurrent
+controllers. OpenBot is an unreleased mapping, conditional on verified local
+capabilities; adopting it requires channel/role/model setup and admission/control
+validation. Existing Herdr projects need no adaptation, and stories in flight
+retain their current runtime until reconciliation and checkpointing. The shared
+skill version remains `0.2.0` pending a release decision.
 
 ## 0.2.0
 

@@ -53,6 +53,7 @@ skills/
     references/
       configuration.md    # Shared config, local execution overrides and tracker selector
       herdr.md            # Herdr operation mapping and capability limitations
+      openbot.md          # Project channel, PM lead and agent workers (unreleased)
       cursor-cloud.md     # Cursor Cloud API agent/run mapping
       cursor-subagents.md # Native Cursor session delegation
       fx.md               # fx ask CLI harness mapping; native subagents deferred
@@ -92,7 +93,9 @@ Tracker defines missing-access and partial-operation handling; orchestrator
 defines capability checks and execution controls. The shared release and
 installed sibling layout are defined in `AGENTS.md` and `README.md`; runtime
 pairing and autonomous-session reliability still need evaluation. Herdr is the
-v1 runtime; Cursor Cloud/native subagents are deferred and cmux is excluded.
+v1 runtime; the unreleased OpenBot mapping adds project-channel coordination
+subject to installation capability checks. Cursor Cloud/native subagents are
+deferred and cmux is excluded.
 
 Current review context and unresolved design questions live in
 [MEMORY.md](../MEMORY.md).

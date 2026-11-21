@@ -8,6 +8,13 @@ version.
 
 ### Stack changes
 
+- **OpenBot addition:** Orchestrator adds an unreleased, environment-independent
+  project-channel mapping with a PM lead and agent workers, role/model discovery,
+  asynchronous handoffs and capability-gated admission/recovery. Workflow gates
+  and tracker schemas/operations are unchanged; neither skill needs adaptation.
+  Existing Herdr projects need no adaptation. OpenBot adoption requires explicit
+  setup and validation; in-flight work retains its current runtime until reconciled.
+
 - **Orchestrator:** Adds optional, gitignored `.mstack/config.local.json` for
   execution settings. Precedence is explicit run instructions, local overrides,
   shared settings, then skill defaults. Defines allowed keys, validation, object

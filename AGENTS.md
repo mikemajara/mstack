@@ -84,6 +84,10 @@ deliberately.
 
 ## Boundaries
 
+Keep mstack environment-agnostic. Integration references teach agents how to
+discover and configure their environment; do not hard-code personal agent names,
+accounts, model choices, channel IDs or checkout paths in distributed skills.
+
 Keep `legacy/backlog/` unchanged as historical source material. Consult relevant
 parts when useful; its instructions are not operating guidance for this repo.
 Drafting does not authorize installation or activation. Do not install skills,
