@@ -18,6 +18,26 @@ context. Choices that do not block implementation are identified. Relevant
 constraints that affect implementation or judgment are captured in the
 specification, or it states that none apply.
 
+Before any new implementation start, including work started directly without
+the orchestrator, compare the specified behavior with the target branch. Record
+the target branch and inspected commit, evidence linked for each acceptance
+criterion, each criterion's result (met, unmet or uncertain), and any remaining
+gap on the existing canonical story. Assess behavior on the repository; a
+matching filename, commit message or PR title alone is not evidence that a
+criterion is met.
+
+If the target branch advances before work starts, inspect whether the intervening
+changes could affect the evidence and rerun the affected checks. When all
+criteria are met, do not start implementation; reconcile existing delivery
+evidence and identify any missing verification under the existing QA, merge
+and closure rules. When only part of the specification is met, keep the story
+open and scope implementation to a demonstrated gap. An unrelated criterion
+may remain uncertain while that gap proceeds, but resolve uncertainty first
+when it could make the proposed change redundant. Preserve ownership of work
+already in flight and reconcile it before making a new assignment. For a
+candidate duplicate, link the related story; record a duplicate disposition
+only when authorized under [story completion](../lifecycle.md#story-completion).
+
 ## Required outputs
 
 Stories in [implementation][phase:implementation] contain the code for the features the specification describes, and that code stays within the specified scope.

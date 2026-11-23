@@ -168,8 +168,15 @@ not pass the trial.
    invent or write a priority solely to determine selection order.
 3. Admit the next action only while the run is active and its limits permit it.
    Recheck before launches, continuations, fallback attempts and delivery actions.
-   Read current story state, check for an existing claim or active/uncertain
-   worker, then claim available work through tracker by recording the owning
+   Read current story state and check for an existing claim or active/uncertain
+   worker. Before claiming or assigning implementation, apply workflow's
+   [implementation entry check](../mstack-workflow/references/phases/implementation.md#entry-prerequisites)
+   to the target branch and record its evidence and disposition on the existing
+   canonical story. If the target has advanced since inspection, recheck the
+   affected evidence. Do not dispatch work already demonstrated on the target,
+   resolve uncertainty that could make the proposed change redundant, and
+   preserve existing ownership until its work is reconciled. Then claim
+   available work through tracker by recording the owning
    run/actor and changing [open][status:open] to [doing][status:doing]. Confirm
    the stored claim before dispatch. For filesystem tracking, the controller
    is the sole record writer; workers return proposed issue updates with their
