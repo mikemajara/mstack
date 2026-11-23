@@ -181,8 +181,12 @@ subagents are deferred and unsupported. The fx mapping covers the `fx ask` CLI
 only; fx subagents are also unsupported.
 
 `execution.runtimeOptions` holds target settings owned by the runtime reference.
-In mstack 0.2.0, supported runtime targets are Herdr's `session` or `machine`
-options. Resolve these before dispatch; do not pass arbitrary keys as CLI flags
+In the released mstack 0.2.0 baseline, runtime targets are Herdr's `session` or
+`machine` options. The unreleased [OpenBot mapping](openbot.md) additionally
+defines `runtime: "openbot"`, `harness: "openbot-agent"`, and runtime options
+`channelId` and role-to-agent `agents` bindings. These refer to discovered
+installation resources; they grant no access and do not change agent settings.
+Resolve these before dispatch; do not pass arbitrary keys as CLI flags
 or mix one runtime's target settings into another's operation.
 When an override changes runtime, replace its `runtimeOptions` with settings
 for that runtime, or an empty object if none are supplied. Inherit and merge

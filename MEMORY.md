@@ -5,6 +5,27 @@ Current continuity for developing mstack. Repository rules live in
 product behavior in the [draft skills](skills/). Keep only context that helps
 the next development decision.
 
+## OpenBot integration draft — 2026-11-18
+
+- User decision: mstack stays environment-agnostic. OpenBot uses one project
+  channel with a PM as lead and distinct agents as workers; Herdr uses panes.
+  Distributed guidance discovers/configures roles and models, without personal
+  agent names, channel IDs or account defaults. The maintainer advises the
+  consulting user/agent on those choices, rather than mandating consultation
+  with a named maintainer.
+- [OpenBot mapping](skills/mstack-orchestrator/references/openbot.md) is an
+  unreleased authoring change; shared version remains 0.2.0 pending release.
+  Tool schemas inspected for channels, assignments, results, cancellation and
+  agent/model discovery. Channel lead is not proof of exclusive admission;
+  cancellation is context-limited and does not prove external jobs stopped.
+- User selected mstack itself for a supervised trial. Setup inspection found no
+  mstack project channel initially; a project channel was then created with an
+  existing PM lead, maintainer, developer and independent QA member. Personal
+  identities/model observations are confined to channel setup. No agents changed,
+  skills installed or tasks dispatched. Local link/version/privacy checks and
+  `git diff --check` passed. Live continuation, deadline, admission and recovery
+  validation remain open; do not report document checks as runtime QA.
+
 ## QA hardening draft — 2026-10-31
 
 - Draft on local branch `draft/qa-hardening`, not pushed or installed. Adds a fix reproduction (base fails, head passes, or a justified substitute) and one QA scope and regression check, owned in mstack's own wording. Proposed as `0.2.0`; new required gates would be "major" under the bump rules, so the version is open for the user to confirm.

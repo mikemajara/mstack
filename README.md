@@ -61,8 +61,10 @@ never relax a gate.
    under `.mstack/issues/`. Each story has one canonical record; an
    unavailable tracker never switches storage automatically.
 4. To coordinate agents, add [`.mstack/config.json`](skills/mstack-orchestrator/references/configuration.md).
-   Herdr is the supported runtime; a single agent in the current session also
-   works.
+   Herdr is the released runtime; a single agent in the current session also
+   works. The unreleased [OpenBot integration](skills/mstack-orchestrator/references/openbot.md)
+   describes one project channel with a PM lead and separate agent workers.
+   Discover and configure each installation; unattended reliability remains unvalidated.
 5. Optionally put personal execution preferences in gitignored
    `.mstack/config.local.json`. Workflow and tracker settings stay shared.
    Orchestration precedence is explicit run instructions, local overrides,

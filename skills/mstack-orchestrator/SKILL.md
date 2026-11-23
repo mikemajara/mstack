@@ -69,7 +69,10 @@ runtime. Runtime/harness launch settings apply when starting workers. If this
 actor implements the change, hand QA to a different actor; a lone implementer
 can proceed to the QA handoff but cannot supply its independent verdict.
 
-For mstack 0.2.0, Herdr is the supported execution runtime. Cursor Cloud and
+For the released mstack 0.2.0 baseline, Herdr is the supported execution runtime.
+The unreleased [OpenBot mapping](references/openbot.md) adds a project channel
+with a PM lead and agent workers, conditional on verified installation
+capabilities; it is not yet validated for unattended use. Cursor Cloud and
 native Cursor subagents are deferred and unsupported; cmux is not included.
 Agent harness means the client running the agent, such as `agent-cursor`,
 `codex` or `fx`. Model tiers are project-configurable selections within those
@@ -268,6 +271,7 @@ complete. Use workflow and tracker contracts for recorded facts.
 
 | Runtime/context | Reference or limitation |
 | --- | --- |
+| OpenBot (unreleased) | [Project-channel execution mapping](references/openbot.md), PM lead, agent workers and capability checks |
 | Herdr | [Execution mapping](references/herdr.md), including current capability limits |
 | fx CLI | [Native CLI harness mapping](references/fx.md); use through a supported runtime |
 
